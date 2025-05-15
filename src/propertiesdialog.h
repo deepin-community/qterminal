@@ -21,6 +21,7 @@
 
 #include <QStyledItemDelegate>
 #include <QKeySequenceEdit>
+#include <QPushButton>
 #include "ui_propertiesdialog.h"
 
 class KeySequenceEdit : public QKeySequenceEdit
@@ -62,13 +63,18 @@ class PropertiesDialog : public QDialog, Ui::PropertiesDialog
         PropertiesDialog(QWidget *parent=nullptr);
         ~PropertiesDialog() override;
 
+        bool eventFilter(QObject *object, QEvent *event) override;
+
     signals:
         void propertiesChanged();
 
     private:
         void setFontSample(const QFont & f);
-        void openBookmarksFile(const QString &fname);
-        void saveBookmarksFile(const QString &fname);
+        void openBookmarksFile();
+        void saveBookmarksFile();
+
+        KeySequenceEdit *dropShortCutEdit;
+        QPushButton *exampleBookmarksButton;
 
     private slots:
         void apply();
@@ -76,11 +82,12 @@ class PropertiesDialog : public QDialog, Ui::PropertiesDialog
 
         void changeFontButton_clicked();
         void chooseBackgroundImageButton_clicked();
+        void bookmarksPathEdited();
         void bookmarksButton_clicked();
 
     protected:
         void setupShortcuts();
-        void saveShortcuts();
+        void applyShortcuts();
 };
 
 

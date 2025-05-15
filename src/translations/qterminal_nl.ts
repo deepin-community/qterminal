@@ -15,7 +15,7 @@
         <location filename="../forms/fontdialog.ui" line="14"/>
         <location filename="../forms/fontdialog.ui" line="73"/>
         <source>Select Terminal Font</source>
-        <translation>Kies lettertype voor terminalvenster</translation>
+        <translation>Terminallettertype kiezen</translation>
     </message>
     <message>
         <location filename="../forms/fontdialog.ui" line="32"/>
@@ -30,792 +30,932 @@
     <message>
         <location filename="../forms/fontdialog.ui" line="59"/>
         <source>Preview</source>
-        <translation>Voorbeeldweergave</translation>
+        <translation>Voorvertoning</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="92"/>
+        <location filename="../mainwindow.cpp" line="94"/>
         <source>Bookmarks</source>
         <translation>Bladwijzers</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="192"/>
+        <source>Keep window open when it loses focus</source>
+        <translation>Venster geopend houden na verliezen van focus</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="211"/>
         <source>Press &quot;%1&quot; to see the terminal.</source>
-        <translation>Druk op &apos;%1&apos; om het terminalvenster te zien.</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="234"/>
-        <source>&amp;Clear Active Terminal</source>
-        <translation>Maak actieve terminal leeg</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="241"/>
-        <source>&amp;Next Tab</source>
-        <translation>Volgende tabblad</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="244"/>
-        <source>&amp;Previous Tab</source>
-        <translation>Vorige tabblad</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="247"/>
-        <source>&amp;Previous Tab in History</source>
-        <translation>Vorige tabblad in geschiedenis</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="250"/>
-        <source>&amp;Next Tab in History</source>
-        <translation>Volgende tabblad in geschiedenis</translation>
+        <translation>Druk op ‘%1’ om het terminalvenster te openen.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="253"/>
+        <source>&amp;Clear Active Terminal</source>
+        <translation>A&amp;ctief terminalvenster leegmaken</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="260"/>
+        <source>&amp;Next Tab</source>
+        <translation>Volge&amp;nd tabblad</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="263"/>
+        <source>&amp;Previous Tab</source>
+        <translation>&amp;Vorig tabblad</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="266"/>
+        <source>&amp;Previous Tab in History</source>
+        <translation>Vorig tab&amp;blad in geschiedenis</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="269"/>
+        <source>&amp;Next Tab in History</source>
+        <translation>Volge&amp;nd tabblad in geschiedenis</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="272"/>
         <source>Move Tab &amp;Left</source>
-        <translation>Verplaats tabblad naar links</translation>
+        <translation>Tabblad naar &amp;links verplaatsen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="256"/>
+        <location filename="../mainwindow.cpp" line="275"/>
         <source>Move Tab &amp;Right</source>
-        <translation>Verplaats tabblad naar rechts</translation>
+        <translation>Tabblad naar &amp;rechts verplaatsen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="261"/>
+        <location filename="../mainwindow.cpp" line="280"/>
         <source>Tab</source>
-        <translation>Tab</translation>
+        <translation>Tabblad</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="262"/>
+        <location filename="../mainwindow.cpp" line="281"/>
         <source>Go to</source>
         <translation>Ga naar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="275"/>
-        <source>Split Terminal &amp;Horizontally</source>
-        <translation>Splits terminal horizontaal</translation>
+        <location filename="../mainwindow.cpp" line="294"/>
+        <source>Split &amp;View Top-Bottom</source>
+        <translation>Weerga&amp;ve boven en onder splitsen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="278"/>
-        <source>Split Terminal &amp;Vertically</source>
-        <translation>Splits terminal vertikaal</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="283"/>
-        <source>&amp;Collapse Subterminal</source>
-        <translation>Vouw subterminal samen</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="286"/>
-        <source>&amp;Top Subterminal</source>
-        <translation>Bovenste subterminal</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="289"/>
-        <source>&amp;Bottom Subterminal</source>
-        <translation>Onderste subterminal</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="292"/>
-        <source>L&amp;eft Subterminal</source>
-        <translation>Linker-subterminal</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="295"/>
-        <source>R&amp;ight Subterminal</source>
-        <translation>Rechter-subterminal</translation>
+        <location filename="../mainwindow.cpp" line="297"/>
+        <source>Split Vie&amp;w Left-Right</source>
+        <translation>&amp;Weergave links en rechts splitsen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="302"/>
-        <source>Copy &amp;Selection</source>
-        <translation>Kopieer selectie</translation>
+        <source>&amp;Collapse Subterminal</source>
+        <translation>Onderliggende terminal in&amp;klappen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="305"/>
-        <source>Paste Clip&amp;board</source>
-        <translation>Plak klembord</translation>
+        <source>&amp;Top Subterminal</source>
+        <translation>&amp;Bovenste terminal</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="308"/>
-        <source>Paste S&amp;election</source>
-        <translation>Plak selectie</translation>
+        <source>&amp;Bottom Subterminal</source>
+        <translation>On&amp;derste terminal</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="311"/>
-        <source>Zoom &amp;in</source>
-        <translation>Vergroten</translation>
+        <source>L&amp;eft Subterminal</source>
+        <translation>Lin&amp;kerterminal</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="314"/>
-        <source>Zoom &amp;out</source>
-        <translation>Verkleinen</translation>
+        <source>R&amp;ight Subterminal</source>
+        <translation>Rechterterm&amp;inal</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="317"/>
-        <source>Zoom rese&amp;t</source>
-        <translation>Vergrotingsfactor terugzetten</translation>
+        <location filename="../mainwindow.cpp" line="321"/>
+        <source>Copy &amp;Selection</source>
+        <translation>&amp;Selectie kopiëren</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="322"/>
-        <source>&amp;Find...</source>
-        <translation>&amp;Zoeken...</translation>
+        <location filename="../mainwindow.cpp" line="324"/>
+        <source>Paste Clip&amp;board</source>
+        <translation>Klem&amp;bord plakken</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="325"/>
-        <source>Handle history...</source>
-        <translation type="unfinished"></translation>
+        <location filename="../mainwindow.cpp" line="327"/>
+        <source>Paste S&amp;election</source>
+        <translation>S&amp;electie plakken</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="330"/>
+        <source>Zoom &amp;in</source>
+        <translation>&amp;Inzoomen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="333"/>
+        <source>Zoom &amp;out</source>
+        <translation>Uitz&amp;oomen</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="336"/>
+        <source>Zoom rese&amp;t</source>
+        <translation>S&amp;tandaard zoomniveau</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="341"/>
+        <source>&amp;Find...</source>
+        <translation>&amp;Zoeken…</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="344"/>
+        <source>Handle history...</source>
+        <translation>Geschiedenis beheren…</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="352"/>
         <source>&amp;Save Session</source>
-        <translation>Sessie opslaan</translation>
+        <translation>Sessie op&amp;slaan</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="339"/>
+        <location filename="../mainwindow.cpp" line="358"/>
         <source>&amp;Load Session</source>
-        <translation>Sessie laden</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="346"/>
-        <source>&amp;Toggle Menu</source>
-        <translation>Menu omschakelen</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="351"/>
-        <source>Rename session</source>
-        <translation>Hernoem sessie</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="360"/>
-        <source>&amp;New Tab</source>
-        <translation>Nieuw tabblad</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="364"/>
-        <source>New Tab From &amp;Preset</source>
-        <translation>Nieuw tabblad vanuit voorkeuze</translation>
+        <translation>Sessie &amp;laden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="365"/>
+        <source>&amp;Toggle Menu</source>
+        <translation>Menu open/slui&amp;ten</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="370"/>
+        <source>Rename session</source>
+        <translation>Sessienaam wijzigen</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="379"/>
+        <source>&amp;New Tab</source>
+        <translation>&amp;Nieuw tabblad</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="383"/>
+        <source>New Tab From &amp;Preset</source>
+        <translation>Nieuw tabbla&amp;d uit voorinstelling</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="384"/>
         <source>1 &amp;Terminal</source>
         <translation>1 &amp;terminal</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="367"/>
+        <location filename="../mainwindow.cpp" line="388"/>
         <source>2 &amp;Horizontal Terminals</source>
-        <translation>2 horizontale terminals</translation>
+        <translation>2 &amp;horizontale terminals</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="369"/>
+        <location filename="../mainwindow.cpp" line="390"/>
         <source>2 &amp;Vertical Terminals</source>
-        <translation>2 verticale terminals</translation>
+        <translation>2 &amp;verticale terminals</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="371"/>
+        <location filename="../mainwindow.cpp" line="392"/>
         <source>4 Terminal&amp;s</source>
-        <translation>4 terminals</translation>
+        <translation>4 terminal&amp;s</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="377"/>
+        <location filename="../mainwindow.cpp" line="398"/>
         <source>&amp;Close Tab</source>
-        <translation>Tabblad sluiten</translation>
+        <translation>Tabblad &amp;sluiten</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="380"/>
+        <location filename="../mainwindow.cpp" line="401"/>
         <source>&amp;New Window</source>
         <translation>&amp;Nieuw venster</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="385"/>
+        <location filename="../mainwindow.cpp" line="406"/>
         <source>&amp;Preferences...</source>
-        <translation>&amp;Voorkeuren...</translation>
+        <translation>&amp;Instellingen…</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="389"/>
+        <location filename="../mainwindow.cpp" line="410"/>
         <source>&amp;Quit</source>
         <translation>&amp;Afsluiten</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="395"/>
+        <location filename="../mainwindow.cpp" line="416"/>
         <source>&amp;Hide Window Borders</source>
-        <translation>Vensterranden verbergen</translation>
+        <translation>Vensterranden verber&amp;gen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="413"/>
+        <location filename="../mainwindow.cpp" line="434"/>
         <source>&amp;Show Tab Bar</source>
-        <translation>Toon tabbladenbalk</translation>
+        <translation>Tabbladbalk to&amp;nen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="421"/>
+        <location filename="../mainwindow.cpp" line="442"/>
         <source>Fullscreen</source>
-        <translation>Schermvullend</translation>
+        <translation>Beeldvullend</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="427"/>
+        <location filename="../mainwindow.cpp" line="448"/>
         <source>Toggle Bookmarks</source>
-        <translation>Bladwijzers omschakelen</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="435"/>
-        <source>&amp;Bottom</source>
-        <translation>Onderkant</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="436"/>
-        <source>&amp;Top</source>
-        <translation>Bovenkant</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="437"/>
-        <location filename="../mainwindow.cpp" line="473"/>
-        <source>&amp;Right</source>
-        <translation>Rechts</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="438"/>
-        <location filename="../mainwindow.cpp" line="474"/>
-        <source>&amp;Left</source>
-        <translation>Links</translation>
+        <translation>Bladwijzers tonen/verbergen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="456"/>
+        <source>&amp;Bottom</source>
+        <translation>&amp;Onderkant</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="457"/>
+        <source>&amp;Top</source>
+        <translation>Bovenkan&amp;t</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="458"/>
+        <location filename="../mainwindow.cpp" line="494"/>
+        <source>&amp;Right</source>
+        <translation>&amp;Rechts</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="459"/>
+        <location filename="../mainwindow.cpp" line="495"/>
+        <source>&amp;Left</source>
+        <translation>&amp;Links</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="477"/>
         <source>&amp;Tabs Layout</source>
-        <translation>Vormgeving van tabbladen</translation>
+        <translation>&amp;Tabbladindeling</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="472"/>
+        <location filename="../mainwindow.cpp" line="493"/>
         <source>&amp;None</source>
-        <translation>Geen</translation>
+        <translation>Gee&amp;n</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="490"/>
+        <location filename="../mainwindow.cpp" line="511"/>
         <source>S&amp;crollbar Layout</source>
-        <translation>Vormgeving van schuifbalk</translation>
+        <translation>S&amp;chuifbalkindeling</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="503"/>
+        <location filename="../mainwindow.cpp" line="524"/>
         <source>&amp;BlockCursor</source>
-        <translation>Blokaanwijzer</translation>
+        <translation>&amp;Blok</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="504"/>
+        <location filename="../mainwindow.cpp" line="525"/>
         <source>&amp;UnderlineCursor</source>
-        <translation>Onderstreepte aanwijzer</translation>
+        <translation>Ligg&amp;end streepje</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="505"/>
+        <location filename="../mainwindow.cpp" line="526"/>
         <source>&amp;IBeamCursor</source>
-        <translation>Straalaanwijzer</translation>
+        <translation>Plat vert&amp;icaal streepje</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="522"/>
+        <location filename="../mainwindow.cpp" line="543"/>
         <source>&amp;Keyboard Cursor Shape</source>
-        <translation>Vorm van toetsenbordaanwijzer</translation>
+        <translation>&amp;Cursorvorm</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="622"/>
+        <location filename="../mainwindow.cpp" line="650"/>
         <source>Exit QTerminal</source>
-        <translation>Sluit QTerminal af</translation>
+        <translation>QTerminal afsluiten</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="624"/>
+        <location filename="../mainwindow.cpp" line="652"/>
         <source>Do not ask again</source>
-        <translation>Vraag dit niet meer</translation>
+        <translation>Niet meer vragen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="632"/>
+        <location filename="../mainwindow.cpp" line="660"/>
         <source>Are you sure you want to exit?</source>
         <translation>Weet u zeker dat u wilt afsluiten?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="663"/>
-        <source>A lightweight multiplatform terminal emulator</source>
-        <translation>Een lichtgewicht-terminalnabootser voor meerdere platformen</translation>
+        <location filename="../mainwindow.cpp" line="688"/>
+        <source>About</source>
+        <translation>Over</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="690"/>
+        <source>A lightweight and powerful multiplatform terminal emulator</source>
+        <translation>Een lichte doch krachtige platform-onafhankelijke terminalemulator</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="692"/>
+        <source>Copyright (C) </source>
+        <translation>Copyright (C) </translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="692"/>
+        <source>2013-2022</source>
+        <translation>2013-2022</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="694"/>
+        <source>LXQt Project</source>
+        <translation>Het LXQt-project</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="696"/>
+        <source>Development: </source>
+        <translation>Ontwikkeling: </translation>
     </message>
 </context>
 <context>
     <name>PropertiesDialog</name>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="550"/>
+        <location filename="../forms/propertiesdialog.ui" line="830"/>
         <source>Emulation</source>
-        <translation>Nabootsing</translation>
+        <translation>Emulatie</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="47"/>
+        <location filename="../forms/propertiesdialog.ui" line="39"/>
         <source>Shortcuts</source>
         <translation>Sneltoetsen</translation>
     </message>
     <message>
         <location filename="../forms/propertiesdialog.ui" line="14"/>
         <source>Terminal settings</source>
-        <translation>Instellingen voor het terminalvenster</translation>
+        <translation>Terminalinstellingen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="31"/>
+        <location filename="../forms/propertiesdialog.ui" line="21"/>
         <source>Appearance</source>
-        <translation>Uiterlijk</translation>
+        <translation>Vormgeving</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="39"/>
-        <location filename="../forms/propertiesdialog.ui" line="575"/>
+        <location filename="../forms/propertiesdialog.ui" line="30"/>
+        <location filename="../forms/propertiesdialog.ui" line="581"/>
         <source>Behavior</source>
         <translation>Gedrag</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="55"/>
+        <location filename="../forms/propertiesdialog.ui" line="48"/>
         <source>Dropdown</source>
-        <translation>Openklappen</translation>
+        <translation>Uitvouwen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="63"/>
+        <location filename="../forms/propertiesdialog.ui" line="57"/>
         <source>Bookmarks</source>
         <translation>Bladwijzers</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="258"/>
+        <location filename="../forms/propertiesdialog.ui" line="272"/>
         <source>Hide tab bar with only one tab</source>
-        <translation>Verberg tabbladenbalk met slechts één tabblad</translation>
+        <translation>Tabbladbalk verbergen als er slechts één tabblad is</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="275"/>
+        <location filename="../forms/propertiesdialog.ui" line="173"/>
         <source>Color scheme</source>
         <translation>Kleurenschema</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="184"/>
+        <location filename="../forms/propertiesdialog.ui" line="163"/>
         <source>&amp;Change...</source>
-        <translation>Wijzigen...</translation>
+        <translation>Wij&amp;zigen…</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="238"/>
+        <location filename="../forms/propertiesdialog.ui" line="186"/>
         <source>Widget style</source>
         <translation>Stijl van bedieningselementen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="335"/>
+        <location filename="../forms/propertiesdialog.ui" line="199"/>
         <source>Scrollbar position</source>
-        <translation>Positie van schuifbalk</translation>
+        <translation>Schuifbalkpositie</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="418"/>
+        <location filename="../forms/propertiesdialog.ui" line="212"/>
         <source>Tabs position</source>
-        <translation>Positie van tabbladen</translation>
+        <translation>Tabbladpositie</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="194"/>
+        <location filename="../forms/propertiesdialog.ui" line="258"/>
         <source>Show the menu bar</source>
-        <translation>Toon de menubalk</translation>
+        <translation>Menubalk tonen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="368"/>
+        <location filename="../forms/propertiesdialog.ui" line="299"/>
         <source>Show a border around the current terminal</source>
-        <translation>Toon een rand rond het huidige terminalvenster</translation>
+        <translation>Rand tonen rond huidige terminalvenster</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="358"/>
+        <location filename="../forms/propertiesdialog.ui" line="354"/>
         <source>Application transparency</source>
-        <translation>Doorzichtigheid van de toepassing</translation>
+        <translation>Doorzichtigheid</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="345"/>
+        <location filename="../forms/propertiesdialog.ui" line="380"/>
         <source>Terminal transparency</source>
-        <translation>Doorzichtigheid van de terminal</translation>
+        <translation>Terminaldoorzichtigheid</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="204"/>
+        <location filename="../forms/propertiesdialog.ui" line="463"/>
         <source>Start with preset:</source>
-        <translation>Begin met voorinstelling:</translation>
+        <translation>Beginnen met voorinstelling:</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="215"/>
+        <location filename="../forms/propertiesdialog.ui" line="474"/>
         <source>None (single terminal)</source>
         <translation>Geen (enkel terminalvenster)</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="220"/>
+        <location filename="../forms/propertiesdialog.ui" line="479"/>
         <source>2 terminals horizontally</source>
-        <translation>2 terminalvensters horizontaal</translation>
+        <translation>2 terminalvensters (horizontaal)</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="225"/>
+        <location filename="../forms/propertiesdialog.ui" line="484"/>
         <source>2 terminals vertically</source>
-        <translation>2 terminalvensters verticaal</translation>
+        <translation>2 terminalvensters (verticaal)</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="230"/>
+        <location filename="../forms/propertiesdialog.ui" line="489"/>
         <source>4 terminals</source>
         <translation>4 terminalvensters</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="148"/>
+        <location filename="../forms/propertiesdialog.ui" line="127"/>
         <source>Font</source>
         <translation>Lettertype</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="299"/>
+        <location filename="../forms/propertiesdialog.ui" line="225"/>
         <source>Cursor shape</source>
         <translation>Cursorvorm</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="435"/>
+        <location filename="../forms/propertiesdialog.ui" line="279"/>
         <source>Fixed tab width:</source>
         <translation>Vaste tabbladbreedte:</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="248"/>
+        <location filename="../forms/propertiesdialog.ui" line="497"/>
         <source>Terminal margin</source>
         <translation>Terminalmarge</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="462"/>
+        <location filename="../forms/propertiesdialog.ui" line="347"/>
         <source>Use box drawing characters contained in the font</source>
-        <translation>Gebruik karakters uit het font om rechthoeken te tekenen</translation>
+        <translation>Tekens uit lettertype gebruiken om rechthoeken te tekenen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="469"/>
+        <location filename="../forms/propertiesdialog.ui" line="248"/>
         <source>Accelerators are activated by Alt and can interfere with the terminal.</source>
-        <translation>Snelkoppelingen worden met Alt geactiveerd en kunnen de terminal verstoren.</translation>
+        <translation>Sneltoetsen worden met Alt geactiveerd en kunnen de terminal verstoren.</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="472"/>
+        <location filename="../forms/propertiesdialog.ui" line="251"/>
         <source>No menu bar accelerator</source>
-        <translation>Geen snelknop menubalk</translation>
+        <translation>Geen sneltoetsen op menubalk</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="675"/>
+        <location filename="../forms/propertiesdialog.ui" line="614"/>
         <source>Action after paste</source>
         <translation>Actie na plakken</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="712"/>
+        <location filename="../forms/propertiesdialog.ui" line="654"/>
         <source>Confirm multiline paste</source>
-        <translation>Bevestig plakken van meerdere regels</translation>
+        <translation>Plakken van meerdere regels bevestigen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="753"/>
+        <location filename="../forms/propertiesdialog.ui" line="661"/>
         <source>Trim trailing newlines in pasted text</source>
-        <translation>Verwijder nieuwe-regel-aanduidingen aan einde van geplakte tekst</translation>
+        <translation>Nieuweregelaanduidingen aan einde van geplakte tekst wissen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="688"/>
+        <location filename="../forms/propertiesdialog.ui" line="757"/>
         <source>Open new terminals in current working directory</source>
-        <translation>Open nieuwe terminalvensters in huidige werkmap</translation>
+        <translation>Nieuwe terminalvensters openen in huidige werkmap</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="719"/>
+        <location filename="../forms/propertiesdialog.ui" line="692"/>
         <source>Save Size when closing</source>
-        <translation>Grootte opslaan bij sluiten</translation>
+        <translation>Afmetingen onthouden bij sluiten</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="760"/>
+        <location filename="../forms/propertiesdialog.ui" line="685"/>
         <source>Save Position when closing</source>
         <translation>Positie opslaan bij sluiten</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="736"/>
+        <location filename="../forms/propertiesdialog.ui" line="678"/>
         <source>Ask for confirmation when closing</source>
-        <translation>Vraag om bevestiging bij afsluiten</translation>
+        <translation>Om bevestiging vragen bij sluiten</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="780"/>
+        <location filename="../forms/propertiesdialog.ui" line="594"/>
         <source>Unlimited history</source>
         <translation>Onbeperkte geschiedenis</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="746"/>
+        <location filename="../forms/propertiesdialog.ui" line="587"/>
         <source>History size (in lines)</source>
-        <translation>Geschiedenisgrootte (in regels)</translation>
+        <translation>Geschiedenisomvang (aantal regels)</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="705"/>
+        <location filename="../forms/propertiesdialog.ui" line="781"/>
         <source>Default $TERM</source>
         <translation>Standaard $TERM</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="596"/>
+        <location filename="../forms/propertiesdialog.ui" line="704"/>
         <source>Start with this size:</source>
-        <translation>Start met deze grootte:</translation>
+        <translation>Starten met de volgende afmetingen:</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="459"/>
+        <location filename="../forms/propertiesdialog.ui" line="427"/>
+        <source>Background mode:</source>
+        <translation>Achtergrondmodus:</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="435"/>
+        <source>None</source>
+        <translation>Geen</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="440"/>
+        <source>Stretch</source>
+        <translation>Uitrekken</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="445"/>
+        <source>Zoom</source>
+        <translation>Zoomen</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="450"/>
+        <source>Fit</source>
+        <translation>Inpassen</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="455"/>
+        <source>Center</source>
+        <translation>Centreren</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="344"/>
         <source>Specify whether box drawing characters should be drawn by QTerminal internally or left to underlying font rendering libraries.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef aan of rechthoeken getekend moeten worden door QTerminal zelf of door het gebruikte lettertype.</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="479"/>
+        <location filename="../forms/propertiesdialog.ui" line="238"/>
         <source>Toggles usage of bold font face for rendering intense colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel het gebruik van vetgedrukte lettertypen voor intensere kleuren in/uit</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="482"/>
+        <location filename="../forms/propertiesdialog.ui" line="241"/>
         <source>Use bold font face for intense colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Vetgedrukt lettertype gebruiken bij intensere kleuren</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="489"/>
+        <location filename="../forms/propertiesdialog.ui" line="265"/>
         <source>&amp;Hide Window Borders</source>
-        <translation type="unfinished">Vensterranden verbergen</translation>
+        <translation>Vensterranden verber&amp;gen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="559"/>
+        <location filename="../forms/propertiesdialog.ui" line="839"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Which behavior to emulate. Note that this does not have to match your operating system.&lt;/p&gt;&lt;p&gt;If you are not sure, use the &lt;span style=&quot; font-weight:600;&quot;&gt;default&lt;/span&gt; emulation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Welk gedrag moet worden nagebootst. Let op: dit hoeft niet overeen te komen met uw besturingssysteem.&lt;/p&gt;&lt;p&gt;Gebruik bij twijfel de &lt;span style=&quot; font-weight:600;&quot;&gt;standaard&lt;/span&gt;emulatie.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="581"/>
+        <location filename="../forms/propertiesdialog.ui" line="817"/>
         <source>This command will be run with an argument containing the file name of a tempfile containing the scrollback history</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze opdracht wordt uitgevoerd met een aanvullende optie die de bestandsnaam van een tijdelijk bestand met de terugscrollgeschiedenis bevat</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="584"/>
+        <location filename="../forms/propertiesdialog.ui" line="820"/>
         <source>Handle history command</source>
-        <translation type="unfinished"></translation>
+        <translation>Geschiedenisopdracht beheren</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="603"/>
-        <location filename="../forms/propertiesdialog.ui" line="617"/>
+        <location filename="../forms/propertiesdialog.ui" line="711"/>
+        <location filename="../forms/propertiesdialog.ui" line="725"/>
         <source> px</source>
         <translation> px</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="624"/>
+        <location filename="../forms/propertiesdialog.ui" line="732"/>
         <source>Get current size</source>
-        <translation>Haal huidige grootte op</translation>
+        <translation>Huidige afmetingen bepalen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="695"/>
+        <location filename="../forms/propertiesdialog.ui" line="767"/>
         <source>Open new tab to the right of the active tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw tabblad rechts van actief tabblad openen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="698"/>
+        <location filename="../forms/propertiesdialog.ui" line="764"/>
         <source>If unchecked the new tab will be opened as the rightmost tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel uit om een nieuw tabblad zo rechts mogelijk te openen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="726"/>
+        <location filename="../forms/propertiesdialog.ui" line="668"/>
         <source>Close tab on middle-click</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabblad sluiten met middelste muisklik</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="798"/>
+        <location filename="../forms/propertiesdialog.ui" line="647"/>
+        <source>Forcefully disable bracketed paste mode</source>
+        <translation>Opdelen van geplakte tekst uitschakelen</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="627"/>
+        <source>Word selection characters</source>
+        <translation>Aantal tekens in woordselectie</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="634"/>
+        <source>When selecting text by word, consider these characters as part of words in addition to alphanumeric characters</source>
+        <translation>Reken dit aantal tekens tot onderdeel van de woorden tijdens het selecteren van woorden</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="637"/>
+        <source>:@-./_~</source>
+        <translation>:@-./_~</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="644"/>
+        <source>Bracketed paste mode is useful for pasting multiline strings.</source>
+        <translation>Dit is handig bij het plakken van meerdere regels.</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="774"/>
+        <source>Audible bell</source>
+        <translation>Hoorbare bel</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="863"/>
         <source>To edit a Shortcut:
 1. Double-click its Key
 2. Press the desired combination and release it
 3. Click on a Shortcut or press Enter
 
 To remove/disable a Shortcut, at point 2 press only a modifier (like Shift)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sneltoets aanpassen:
+1. Dubbelklik op de toets;
+2. Druk op de gewenste sneltoets;
+3. Klik op een sneltoets of druk op enter.
+
+Sneltoets wissen: druk bij stap 2 op een samensteltoets (bijv. Shift)</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="863"/>
+        <location filename="../forms/propertiesdialog.ui" line="917"/>
+        <source>A lock button is shown on horizontal tab bar</source>
+        <translation>Er wordt een vergrendelknop getoond op de horizontale tabbladbalk</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="920"/>
+        <source>Keep window open when it loses focus</source>
+        <translation>Venster geopend houden na verliezen van focus</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="938"/>
         <source>Height</source>
         <translation>Hoogte</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="873"/>
-        <location filename="../forms/propertiesdialog.ui" line="890"/>
+        <location filename="../forms/propertiesdialog.ui" line="948"/>
+        <location filename="../forms/propertiesdialog.ui" line="965"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="880"/>
+        <location filename="../forms/propertiesdialog.ui" line="955"/>
         <source>Width</source>
         <translation>Breedte</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="936"/>
+        <location filename="../forms/propertiesdialog.ui" line="988"/>
+        <source>Note: On Wayland, the shortcut has to be added in the compositor settings for &apos;qterminal -d&apos;.</source>
+        <translation>Let op: op Wayland dient de sneltoets de worden toegevoegd aan de vensterbeheerinstellingen als ‘qterminal -d’.</translation>
+    </message>
+    <message>
+        <location filename="../forms/propertiesdialog.ui" line="1056"/>
         <source>Edit bookmark file contents</source>
-        <translation>Bewerk de inhoud van bladwijzerbestand</translation>
+        <translation>Inhoud van bladwijzerbestand aanpassen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="958"/>
+        <location filename="../forms/propertiesdialog.ui" line="1015"/>
         <source>Enable bookmarks</source>
-        <translation>Schakel bladwijzers in</translation>
+        <translation>Bladwijzers gebruiken</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="967"/>
+        <location filename="../forms/propertiesdialog.ui" line="1024"/>
         <source>Bookmark file</source>
         <translation>Bladwijzerbestand</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="845"/>
+        <location filename="../forms/propertiesdialog.ui" line="910"/>
         <source>Show on start</source>
-        <translation>Toon bij start</translation>
+        <translation>Tonen na opstarten</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="428"/>
+        <location filename="../forms/propertiesdialog.ui" line="316"/>
         <source>Change window title based on current terminal</source>
-        <translation>Verander venstertitel op basis van huidige terminalvenster</translation>
+        <translation>Venstertitel aanpassen op basis van huidig terminalvenster</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="445"/>
+        <location filename="../forms/propertiesdialog.ui" line="323"/>
         <source>Change window icon based on current terminal</source>
-        <translation>Verander vensterpictogram op basis van huidige terminalvenster</translation>
+        <translation>Vensterpictogram aanpassen op basis van huidig terminalvenster</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="382"/>
+        <location filename="../forms/propertiesdialog.ui" line="337"/>
         <source>Enable bi-directional text support</source>
-        <translation>Schakel tweerichtings-tekstondersteuning in</translation>
+        <translation>Tweerichtingstekstondersteuning inschakelen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="265"/>
+        <location filename="../forms/propertiesdialog.ui" line="406"/>
         <source>Background image:</source>
         <translation>Achtergrondafbeelding:</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="290"/>
+        <location filename="../forms/propertiesdialog.ui" line="418"/>
         <source>Select</source>
         <translation>Kiezen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="452"/>
+        <location filename="../forms/propertiesdialog.ui" line="330"/>
         <source>Show terminal size on resize</source>
-        <translation>Toon terminalgrootte bij herschalen</translation>
+        <translation>Terminalafmetingen tonen bij aanpassen van grootte</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="375"/>
-        <location filename="../forms/propertiesdialog.ui" line="408"/>
+        <location filename="../forms/propertiesdialog.ui" line="289"/>
+        <location filename="../forms/propertiesdialog.ui" line="507"/>
         <source>px</source>
         <translation>px</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="325"/>
+        <location filename="../forms/propertiesdialog.ui" line="306"/>
         <source>Show close button on each tab</source>
-        <translation>Toon sluitknop op elk tabblad</translation>
+        <translation>Sluitknop op tabbladen tonen</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="852"/>
+        <location filename="../forms/propertiesdialog.ui" line="927"/>
         <source>Size</source>
         <translation>Grootte</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="904"/>
+        <location filename="../forms/propertiesdialog.ui" line="979"/>
         <source>Shortcut:</source>
         <translation>Sneltoets:</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="980"/>
+        <location filename="../forms/propertiesdialog.ui" line="1037"/>
         <source>Find...</source>
-        <translation>Zoeken...</translation>
+        <translation>Zoeken…</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="989"/>
+        <location filename="../forms/propertiesdialog.ui" line="1046"/>
         <source>You can specify your own bookmarks file location. It allows easy bookmark sharing with tools like OwnCloud or Dropbox.</source>
-        <translation>U kunt uw eigen locatie opgeven voor het bladwijzerbestand. Dit biedt u gemakkelijk delen van bladwijzers met gereedschappen zoals OwnCloud of Dropbox.</translation>
+        <translation>U kunt uw eigen locatie opgeven voor het bladwijzerbestand. Hierdoor kunt het gemakkelijk opslaan op bijv. OwnCloud of Dropbox.</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="117"/>
-        <location filename="../forms/propertiesdialog.ui" line="389"/>
+        <location filename="../forms/propertiesdialog.ui" line="364"/>
+        <location filename="../forms/propertiesdialog.ui" line="390"/>
         <source> %</source>
         <translation> %</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="828"/>
+        <location filename="../forms/propertiesdialog.ui" line="893"/>
         <source>Shortcut</source>
         <translation>Sneltoets</translation>
     </message>
     <message>
-        <location filename="../forms/propertiesdialog.ui" line="833"/>
+        <location filename="../forms/propertiesdialog.ui" line="898"/>
         <source>Key</source>
         <translation>Toets</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="145"/>
+        <location filename="../propertiesdialog.cpp" line="164"/>
         <source>No scrollbar</source>
         <translation>Geen schuifbalk</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="145"/>
-        <location filename="../propertiesdialog.cpp" line="151"/>
+        <location filename="../propertiesdialog.cpp" line="164"/>
+        <location filename="../propertiesdialog.cpp" line="170"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="145"/>
-        <location filename="../propertiesdialog.cpp" line="151"/>
+        <location filename="../propertiesdialog.cpp" line="164"/>
+        <location filename="../propertiesdialog.cpp" line="170"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="151"/>
+        <location filename="../propertiesdialog.cpp" line="170"/>
         <source>Top</source>
         <translation>Bovenaan</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="151"/>
+        <location filename="../propertiesdialog.cpp" line="170"/>
         <source>Bottom</source>
         <translation>Onderaan</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="164"/>
+        <location filename="../propertiesdialog.cpp" line="183"/>
         <source>BlockCursor</source>
         <translation>Blokaanwijzer</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="164"/>
+        <location filename="../propertiesdialog.cpp" line="183"/>
         <source>UnderlineCursor</source>
         <translation>Onderstreepte aanwijzer</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="164"/>
+        <location filename="../propertiesdialog.cpp" line="183"/>
         <source>IBeamCursor</source>
-        <translation>Straalaanwijzer</translation>
+        <translation>Platte streep-aanwijzer</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="182"/>
+        <location filename="../propertiesdialog.cpp" line="201"/>
         <source>No move</source>
         <translation>Geen verplaatsing</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="182"/>
-        <source>Move start</source>
-        <translation>Verplaats naar begin</translation>
+        <location filename="../propertiesdialog.cpp" line="201"/>
+        <source>Scrolling to top</source>
+        <translation>Scrollen naar bovenkant</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="182"/>
-        <source>Move end</source>
-        <translation>Verplaats naar einde</translation>
+        <location filename="../propertiesdialog.cpp" line="201"/>
+        <source>Scrolling to bottom</source>
+        <translation>Scrollen naar onderkant</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="187"/>
-        <location filename="../propertiesdialog.cpp" line="282"/>
+        <location filename="../propertiesdialog.cpp" line="276"/>
+        <source>Examples</source>
+        <translation>Voorbeelden</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="430"/>
+        <source>Images (*.bmp *.jpg *.png *.svg *.xpm)</source>
+        <translation>Afbeeldingen (*.bmp *.jpg *.png *.svg *.xpm)</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="532"/>
+        <source>Open bookmarks file</source>
+        <translation>Bladwijzerbestand openen</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="534"/>
+        <source>XML files (*.xml)</source>
+        <translation>XML-bestanden (*.xml)</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="535"/>
+        <source>All files (*)</source>
+        <translation>Alle bestanden (*)</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="634"/>
+        <location filename="../propertiesdialog.cpp" line="638"/>
+        <source>Question</source>
+        <translation>Vraag</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="634"/>
+        <source>Do you want to overwrite this bookmarks file?</source>
+        <translation>Wilt u dit bladwijzerbestand overschrijven?</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="638"/>
+        <source>The name of bookmarks file does not end with &apos;.xml&apos;.
+Are you sure that you want to overwrite it?</source>
+        <translation>De naam van dit bladwijzerbestand eindigt niet op ‘.xml’.
+Weet u zeker dat u het wilt overschrijven?</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="646"/>
+        <source>Warning</source>
+        <translation>Waarschuwing</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="646"/>
+        <source>Cannot write bookmarks to this file:</source>
+        <translation>De bladwijzers kunnen niet worden weggeschreven naar</translation>
+    </message>
+    <message>
+        <location filename="../propertiesdialog.cpp" line="211"/>
+        <location filename="../propertiesdialog.cpp" line="324"/>
         <source>System Default</source>
         <translation>Systeemstandaard</translation>
     </message>
     <message>
-        <location filename="../propertiesdialog.cpp" line="375"/>
+        <location filename="../propertiesdialog.cpp" line="429"/>
         <source>Choose a background image</source>
         <translation>Kies een achtergrondafbeelding</translation>
-    </message>
-    <message>
-        <location filename="../propertiesdialog.cpp" line="376"/>
-        <source>Images (*.bmp *.png *.xpm *.jpg)</source>
-        <translation>Afbeeldingen (*.bmp *.png *.xpm *.jpg)</translation>
-    </message>
-    <message>
-        <location filename="../propertiesdialog.cpp" line="439"/>
-        <source>Open or create bookmarks file</source>
-        <translation>Open of maak een bladwijzerbestand</translation>
-    </message>
-</context>
-<context>
-    <name>QMessageBox</name>
-    <message>
-        <location filename="../termwidget.cpp" line="239"/>
-        <source>Show Details...</source>
-        <translation>Toon bijzonderheden...</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../bookmarkswidget.cpp" line="108"/>
-        <source>Local Bookmarks</source>
-        <translation>Plaatselijke bladwijzers</translation>
-    </message>
-    <message>
-        <location filename="../bookmarkswidget.cpp" line="166"/>
+        <location filename="../bookmarkswidget.cpp" line="114"/>
         <source>Synchronized Bookmarks</source>
         <translation>Gesynchroniseerde bladwijzers</translation>
     </message>
@@ -823,33 +963,33 @@ To remove/disable a Shortcut, at point 2 press only a modifier (like Shift)</sou
 <context>
     <name>TabWidget</name>
     <message>
-        <location filename="../tabwidget.cpp" line="78"/>
-        <location filename="../tabwidget.cpp" line="232"/>
+        <location filename="../tabwidget.cpp" line="81"/>
+        <location filename="../tabwidget.cpp" line="235"/>
         <source>Shell No. %1</source>
         <translation>Terminalvenster nr. %1</translation>
     </message>
     <message>
-        <location filename="../tabwidget.cpp" line="200"/>
+        <location filename="../tabwidget.cpp" line="203"/>
         <source>Tab name</source>
-        <translation>Naam van tabblad</translation>
+        <translation>Tabbladnaam</translation>
     </message>
     <message>
-        <location filename="../tabwidget.cpp" line="201"/>
+        <location filename="../tabwidget.cpp" line="204"/>
         <source>New tab name:</source>
-        <translation>Nieuwe naam van tabblad:</translation>
+        <translation>Nieuwe tabbladnaam:</translation>
     </message>
     <message>
-        <location filename="../tabwidget.cpp" line="221"/>
+        <location filename="../tabwidget.cpp" line="224"/>
         <source>Select new tab title color</source>
-        <translation>Kies een nieuwe titelkleur voor tabblad</translation>
+        <translation>Kies een nieuwe tabbladnaamkleur</translation>
     </message>
     <message>
-        <location filename="../tabwidget.cpp" line="242"/>
+        <location filename="../tabwidget.cpp" line="253"/>
         <source>Close session</source>
-        <translation>Sluit sessie</translation>
+        <translation>Sessie sluiten</translation>
     </message>
     <message>
-        <location filename="../tabwidget.cpp" line="244"/>
+        <location filename="../tabwidget.cpp" line="255"/>
         <source>Change title color</source>
         <translation>Titelkleur wijzigen</translation>
     </message>
@@ -857,27 +997,14 @@ To remove/disable a Shortcut, at point 2 press only a modifier (like Shift)</sou
 <context>
     <name>TermWidgetHolder</name>
     <message>
-        <location filename="../termwidgetholder.cpp" line="79"/>
+        <location filename="../termwidgetholder.cpp" line="77"/>
         <source>Load Session</source>
-        <translation>Laad sessie</translation>
+        <translation>Sessie laden</translation>
     </message>
     <message>
-        <location filename="../termwidgetholder.cpp" line="80"/>
+        <location filename="../termwidgetholder.cpp" line="78"/>
         <source>List of saved sessions:</source>
-        <translation>Lijst van opgeslagen sessies:</translation>
-    </message>
-</context>
-<context>
-    <name>TermWidgetImpl</name>
-    <message>
-        <location filename="../termwidget.cpp" line="231"/>
-        <source>Paste multiline text</source>
-        <translation>Meerregelige tekst plakken</translation>
-    </message>
-    <message>
-        <location filename="../termwidget.cpp" line="232"/>
-        <source>Are you sure you want to paste this text?</source>
-        <translation>Weet u zeker dat u deze tekst wilt plakken?</translation>
+        <translation>Lijst met opgeslagen sessies:</translation>
     </message>
 </context>
 <context>
@@ -885,7 +1012,7 @@ To remove/disable a Shortcut, at point 2 press only a modifier (like Shift)</sou
     <message>
         <location filename="../forms/qterminal.ui" line="14"/>
         <source>MainWindow</source>
-        <translation>HoofdVenster</translation>
+        <translation>Hoofdvenster</translation>
     </message>
     <message>
         <location filename="../forms/qterminal.ui" line="59"/>
@@ -905,22 +1032,22 @@ To remove/disable a Shortcut, at point 2 press only a modifier (like Shift)</sou
     <message>
         <location filename="../forms/qterminal.ui" line="79"/>
         <source>&amp;View</source>
-        <translation>&amp;Tonen</translation>
+        <translation>&amp;Beeld</translation>
     </message>
     <message>
         <location filename="../forms/qterminal.ui" line="84"/>
         <source>&amp;Edit</source>
-        <translation>Be&amp;werken</translation>
+        <translation>B&amp;ewerken</translation>
     </message>
     <message>
         <location filename="../forms/qterminal.ui" line="100"/>
         <source>&amp;About...</source>
-        <translation>&amp;Over...</translation>
+        <translation>&amp;Over…</translation>
     </message>
     <message>
         <location filename="../forms/qterminal.ui" line="105"/>
         <source>About &amp;Qt...</source>
-        <translation>Over &amp;Qt...</translation>
+        <translation>Over &amp;Qt…</translation>
     </message>
 </context>
 </TS>

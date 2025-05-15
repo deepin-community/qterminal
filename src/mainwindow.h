@@ -44,6 +44,8 @@ public:
     bool dropMode() { return m_dropMode; }
     QMap<QString, QAction*> & leaseActions();
 
+    void rebuildActions();
+
     #ifdef HAVE_QDBUS
     QDBusObjectPath getActiveTab();
     QList<QDBusObjectPath> getTabs();
@@ -60,10 +62,9 @@ private:
 
     // A parent object for QObjects that are created dynamically based on settings
     // Used to simplify the setting cleanup on reconfiguration: deleting settingOwner frees all related QObjects
-    QWidget *settingOwner;
+    QObject *settingOwner;
 
     QMenu *presetsMenu;
-    bool m_removeFinished;
     TerminalConfig m_config;
 
     QDockWidget *m_bookmarksDock;
@@ -73,8 +74,6 @@ private:
     QMap< QString, QAction * > actions;
 
     QStringList menubarOrigTexts;
-
-    void rebuildActions();
 
     void setup_FileMenu_Actions();
     void setup_ActionsMenu_Actions();
@@ -105,7 +104,6 @@ private slots:
     void actAbout_triggered();
     void actProperties_triggered();
     void updateActionGroup(QAction *);
-    void testClose(bool removeFinished);
     void toggleBookmarks();
     void toggleBorderless();
     void toggleTabBar();
@@ -119,7 +117,7 @@ private slots:
     void bookmarksWidget_callCommand(const QString&);
     void bookmarksDock_visibilityChanged(bool visible);
 
-    void addNewTab();
+    void addNewTab(TerminalConfig cfg = TerminalConfig());
     void onCurrentTitleChanged(int index);
 
     void handleHistory();

@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QStyleFactory>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QScreen>
 #include <QWindow>
 
@@ -56,13 +57,16 @@ bool Delegate::eventFilter(QObject *object, QEvent *event)
     if (editor && event->type() == QEvent::KeyPress) {
         QKeyEvent *ke = static_cast<QKeyEvent *>(event);
         int k = ke->key();
-        if (k == Qt::Key_Return || k == Qt::Key_Enter) {
+        // commit data and close the editor with Enter/Return
+        // NOTE: "Enter" from numeric pad is accompanied by "KeypadModifier"
+        if ((ke->modifiers() == Qt::NoModifier || ke->modifiers() == Qt::KeypadModifier)
+            && (k == Qt::Key_Return || k == Qt::Key_Enter)) {
             emit QAbstractItemDelegate::commitData(editor);
             emit QAbstractItemDelegate::closeEditor(editor);
             return true;
         }
-        // treat Tab and Backtab like other keys
-        else if(k == Qt::Key_Tab || k ==  Qt::Key_Backtab) {
+        // treat Tab and Backtab like other keys (instead of changing focus)
+        if (k == Qt::Key_Tab || k ==  Qt::Key_Backtab) {
             editor->pressKey(ke);
             return true;
         }
@@ -83,7 +87,12 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
             this, &PropertiesDialog::chooseBackgroundImageButton_clicked);
 
     // fixed size
-    connect(saveSizeOnExitCheckBox, &QCheckBox::stateChanged, [this] (int state) {
+#if (QT_VERSION >= QT_VERSION_CHECK(6,7,0))
+    connect(saveSizeOnExitCheckBox, &QCheckBox::checkStateChanged, [this] (int state)
+#else
+    connect(saveSizeOnExitCheckBox, &QCheckBox::stateChanged, [this] (int state)
+#endif
+    {
         fixedSizeLabel->setEnabled(state == Qt::Unchecked);
         xLabel->setEnabled(state == Qt::Unchecked);
         fixedWithSpinBox->setEnabled(state == Qt::Unchecked);
@@ -138,6 +147,8 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
 
     backgroundImageLineEdit->setText(Properties::Instance()->backgroundImage);
 
+    backgroundModecomboBox->setCurrentIndex(Properties::Instance()->backgroundMode);
+
     emulationComboBox->addItems(emulations);
     int eix = emulationComboBox->findText(Properties::Instance()->emulation);
     emulationComboBox->setCurrentIndex(eix != -1 ? eix : 0 );
@@ -187,9 +198,14 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     /* actions by motion after paste */
 
     QStringList motionAfter;
-    motionAfter << tr("No move") << tr("Move start") << tr("Move end");
+    motionAfter << tr("No move") << tr("Scrolling to top") << tr("Scrolling to bottom");
     motionAfterPasting_comboBox->addItems(motionAfter);
     motionAfterPasting_comboBox->setCurrentIndex(Properties::Instance()->m_motionAfterPaste);
+
+    disableBracketedPasteModeCheckBox->setChecked(Properties::Instance()->m_disableBracketedPasteMode);
+
+    // word characters for text selection
+    wordCharactersLineEdit->setText(Properties::Instance()->wordCharacters);
 
     // Setting windows style actions
     styleComboBox->addItem(tr("System Default"));
@@ -221,6 +237,12 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     useCwdCheckBox->setChecked(Properties::Instance()->useCWD);
     openNewTabRightToActiveTabCheckBox->setChecked(Properties::Instance()->m_openNewTabRightToActiveTab);
 
+#ifdef HAVE_LIBCANBERRA
+    audibleBellCheckBox->setChecked(Properties::Instance()->audibleBell);
+#else
+    audibleBellCheckBox->setEnabled(false);
+#endif
+
     termComboBox->setCurrentText(Properties::Instance()->term);
 
     handleHistoryLineEdit->setText(Properties::Instance()->handleHistoryCommand);
@@ -230,19 +252,32 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     historyLimitedTo->setValue(Properties::Instance()->historyLimitedTo);
 
     dropShowOnStartCheckBox->setChecked(Properties::Instance()->dropShowOnStart);
+    dropKeepOpenCheckBox->setChecked(Properties::Instance()->dropKeepOpen);
 
-    dropHeightSpinBox->setValue(Properties::Instance()->dropHeight);
     dropHeightSpinBox->setMaximum(100);
-    dropWidthSpinBox->setValue(Properties::Instance()->dropWidht);
     dropWidthSpinBox->setMaximum(100);
+    dropHeightSpinBox->setValue(Properties::Instance()->dropHeight);
+    dropWidthSpinBox->setValue(Properties::Instance()->dropWidth);
 
-    dropShortCutEdit->setText(Properties::Instance()->dropShortCut.toString());
+    dropShortCutEdit = new KeySequenceEdit();
+    dropShortCutFormLayout->setWidget(0, QFormLayout::FieldRole, dropShortCutEdit);
+    dropShortCutEdit->installEventFilter(this);
+    dropShortCutEdit->setKeySequence(Properties::Instance()->dropShortCut);
 
     useBookmarksCheckBox->setChecked(Properties::Instance()->useBookmarks);
-    bookmarksLineEdit->setText(Properties::Instance()->bookmarksFile);
-    openBookmarksFile(Properties::Instance()->bookmarksFile);
+    bookmarksLineEdit->setText(Properties::Instance()->bookmarksFile); // also needed by openBookmarksFile()
+    connect(bookmarksLineEdit, &QLineEdit::editingFinished,
+            this, &PropertiesDialog::bookmarksPathEdited); // manual editing of bookmarks file path
+    openBookmarksFile();
     connect(bookmarksButton, &QPushButton::clicked,
             this, &PropertiesDialog::bookmarksButton_clicked);
+    exampleBookmarksButton = nullptr;
+#ifdef APP_DIR
+    exampleBookmarksButton = new QPushButton(tr("Examples"));
+    FindBookmarkLayout->addWidget(exampleBookmarksButton);
+    connect(exampleBookmarksButton, &QPushButton::clicked,
+            this, &PropertiesDialog::bookmarksButton_clicked);
+#endif
 
     terminalPresetComboBox->setCurrentIndex(Properties::Instance()->terminalsPreset);
 
@@ -260,6 +295,8 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
         Properties::Instance()->saveSettings();
     });
 
+    waylandLabel->setVisible(QGuiApplication::platformName() == QStringLiteral("wayland"));
+
     // restore its size while fitting it into available desktop geometry
     QSize s;
     if (!Properties::Instance()->prefDialogSize.isEmpty())
@@ -272,10 +309,7 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
         resize(s);
 }
 
-
-PropertiesDialog::~PropertiesDialog()
-{
-}
+PropertiesDialog::~PropertiesDialog() = default;
 
 void PropertiesDialog::accept()
 {
@@ -303,6 +337,7 @@ void PropertiesDialog::apply()
     Properties::Instance()->highlightCurrentTerminal = highlightCurrentCheckBox->isChecked();
     Properties::Instance()->showTerminalSizeHint = showTerminalSizeHintCheckBox->isChecked();
     Properties::Instance()->backgroundImage = backgroundImageLineEdit->text();
+    Properties::Instance()->backgroundMode = qBound(0, backgroundModecomboBox->currentIndex(), 4);
 
     Properties::Instance()->askOnExit = askOnExitCheckBox->isChecked();
 
@@ -313,6 +348,11 @@ void PropertiesDialog::apply()
 
     Properties::Instance()->useCWD = useCwdCheckBox->isChecked();
     Properties::Instance()->m_openNewTabRightToActiveTab = openNewTabRightToActiveTabCheckBox->isChecked();
+#ifdef HAVE_LIBCANBERRA
+    Properties::Instance()->audibleBell = audibleBellCheckBox->isChecked();
+#else
+    Properties::Instance()->audibleBell = false;
+#endif
 
     Properties::Instance()->term = termComboBox->currentText();
     Properties::Instance()->handleHistoryCommand = handleHistoryLineEdit->text();
@@ -330,22 +370,20 @@ void PropertiesDialog::apply()
     Properties::Instance()->menuVisible = showMenuCheckBox->isChecked();
     Properties::Instance()->borderless = borderlessCheckBox->isChecked();
     Properties::Instance()->m_motionAfterPaste = motionAfterPasting_comboBox->currentIndex();
+    Properties::Instance()->m_disableBracketedPasteMode = disableBracketedPasteModeCheckBox->isChecked();
 
     Properties::Instance()->historyLimited = historyLimited->isChecked();
     Properties::Instance()->historyLimitedTo = historyLimitedTo->value();
 
-    saveShortcuts();
-
-    Properties::Instance()->saveSettings();
+    applyShortcuts();
 
     Properties::Instance()->dropShowOnStart = dropShowOnStartCheckBox->isChecked();
+    Properties::Instance()->dropKeepOpen = dropKeepOpenCheckBox->isChecked();
     Properties::Instance()->dropHeight = dropHeightSpinBox->value();
-    Properties::Instance()->dropWidht = dropWidthSpinBox->value();
-    Properties::Instance()->dropShortCut = QKeySequence(dropShortCutEdit->text());
+    Properties::Instance()->dropWidth = dropWidthSpinBox->value();
+    Properties::Instance()->dropShortCut = dropShortCutEdit->keySequence();
 
     Properties::Instance()->useBookmarks = useBookmarksCheckBox->isChecked();
-    Properties::Instance()->bookmarksFile = bookmarksLineEdit->text();
-    saveBookmarksFile(Properties::Instance()->bookmarksFile);
 
     Properties::Instance()->terminalsPreset = terminalPresetComboBox->currentIndex();
 
@@ -356,6 +394,14 @@ void PropertiesDialog::apply()
 
     Properties::Instance()->trimPastedTrailingNewlines = trimPastedTrailingNewlinesCheckBox->isChecked();
     Properties::Instance()->confirmMultilinePaste = confirmMultilinePasteCheckBox->isChecked();
+    Properties::Instance()->wordCharacters = wordCharactersLineEdit->text();
+
+    saveBookmarksFile();
+    // NOTE: Because the path of the bookmarks file may be changed by saveBookmarksFile(),
+    // it should be saved only after that.
+    Properties::Instance()->bookmarksFile = bookmarksLineEdit->text();
+
+    Properties::Instance()->saveSettings();
 
     emit propertiesChanged();
 }
@@ -381,14 +427,19 @@ void PropertiesDialog::chooseBackgroundImageButton_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(
                             this, tr("Choose a background image"),
-                            QString(), tr("Images (*.bmp *.png *.xpm *.jpg)"));
+                            QString(), tr("Images (*.bmp *.jpg *.png *.svg *.xpm)"));
     if (!filename.isNull())
         backgroundImageLineEdit->setText(filename);
 }
 
-void PropertiesDialog::saveShortcuts()
+void PropertiesDialog::applyShortcuts()
 {
-    QMap<QString, QAction*> actions = QTerminalApp::Instance()->getWindowList()[0]->leaseActions();
+    auto winList = QTerminalApp::Instance()->getWindowList();
+    if (winList.isEmpty())
+    {
+        return;
+    }
+    QMap<QString, QAction*> actions = winList.at(0)->leaseActions();
     QList< QString > shortcutKeys = actions.keys();
     int shortcutCount = shortcutKeys.count();
 
@@ -414,14 +465,21 @@ void PropertiesDialog::saveShortcuts()
             shortcuts.append(QKeySequence(sequenceString, QKeySequence::NativeText));
         keyAction->setShortcuts(shortcuts);
     }
-    Properties::Instance()->saveSettings();
 }
 
 void PropertiesDialog::setupShortcuts()
 {
+    auto winList = QTerminalApp::Instance()->getWindowList();
+    if (winList.isEmpty())
+    {
+        return;
+    }
+    // shortcuts may have changed by another running instance
+    winList.at(0)->rebuildActions();
+
     shortcutsWidget->setSortingEnabled(false);
 
-    QMap<QString, QAction*> actions = QTerminalApp::Instance()->getWindowList()[0]->leaseActions();
+    QMap<QString, QAction*> actions = winList.at(0)->leaseActions();
     QList< QString > shortcutKeys = actions.keys();
     int shortcutCount = shortcutKeys.count();
 
@@ -455,45 +513,174 @@ void PropertiesDialog::setupShortcuts()
     // No shortcut validation is needed with QKeySequenceEdit.
 }
 
-void PropertiesDialog::bookmarksButton_clicked()
+void PropertiesDialog::bookmarksPathEdited()
 {
-    QFileDialog dia(this, tr("Open or create bookmarks file"));
-    dia.setOption(QFileDialog::DontConfirmOverwrite, true);
-    dia.setFileMode(QFileDialog::AnyFile);
-    if (!dia.exec())
+    if(!bookmarksLineEdit->isModified()) {
         return;
-
-    QString fname = dia.selectedFiles().count() ? dia.selectedFiles().at(0) : QString();
-    if (fname.isNull())
-        return;
-
-    bookmarksLineEdit->setText(fname);
-    openBookmarksFile(bookmarksLineEdit->text());
+    }
+    auto fname = bookmarksLineEdit->text();
+    if (!fname.isEmpty()) {
+        QFileInfo fInfo(fname);
+        if (fInfo.isFile() && fInfo.isReadable()) {
+            openBookmarksFile();
+        }
+    }
 }
 
-void PropertiesDialog::openBookmarksFile(const QString &fname)
+void PropertiesDialog::bookmarksButton_clicked()
 {
+    QFileDialog dia(this, tr("Open bookmarks file"));
+    dia.setFileMode(QFileDialog::ExistingFile);
+    QString xmlStr = tr("XML files (*.xml)");
+    QString allStr = tr("All files (*)");
+    dia.setNameFilters(QStringList() << xmlStr << allStr);
+
+    bool openAppDir(QObject::sender() != bookmarksButton);
+    if (!openAppDir) {
+        // if the path exists, select it; otherwise, open the app directory
+        auto path = bookmarksLineEdit->text();
+        if (!path.isEmpty() && QFile::exists(path)) {
+            if (!path.endsWith(QLatin1String(".xml"))) {
+                dia.selectNameFilter(allStr);
+            }
+            dia.selectFile(path);
+        }
+        else {
+            openAppDir = true;
+        }
+    }
+#ifdef APP_DIR
+    if (openAppDir) {
+        auto appDirStr = QString::fromUtf8(APP_DIR);
+        if (!appDirStr.isEmpty()) {
+            QDir appDir(appDirStr);
+            if (appDir.exists()) {
+                dia.setDirectory(appDir);
+            }
+        }
+    }
+#endif
+
+    if (!dia.exec()) {
+        return;
+    }
+
+    QString fname = dia.selectedFiles().count() ? dia.selectedFiles().at(0) : QString();
+    if (fname.isNull()) {
+        return;
+    }
+
+    bookmarksLineEdit->setText(fname);
+    openBookmarksFile();
+}
+
+void PropertiesDialog::openBookmarksFile()
+{
+    auto fname = bookmarksLineEdit->text();
+    if (fname.isEmpty()) {
+        return;
+    }
+
     QFile f(fname);
     QString content;
-    if (!f.open(QFile::ReadOnly))
-        content = QString::fromLatin1("<qterminal>\n  <group name=\"group1\">\n    <command name=\"cmd1\" value=\"cd $HOME\"/>\n  </group>\n</qterminal>");
-    else
+    if (!f.open(QFile::ReadOnly)) {
+        content = QString::fromLatin1("<qterminal>\n  <group name=\"Change Directory\">\n    <command name=\"Home\" value=\"cd $HOME\"/>\n  </group>\n  <group name=\"File Manager\">\n    <command name=\"Open here\" value=\"xdg-open $(pwd)\"/>\n  </group>\n</qterminal>\n");
+    }
+    else {
         content = QString::fromUtf8(f.readAll());
+    }
 
     bookmarkPlainEdit->setPlainText(content);
     bookmarkPlainEdit->document()->setModified(false);
 }
 
-void PropertiesDialog::saveBookmarksFile(const QString &fname)
+void PropertiesDialog::saveBookmarksFile()
 {
-    if (!bookmarkPlainEdit->document()->isModified())
+    auto fname = bookmarksLineEdit->text();
+    if (fname.isEmpty()) {
         return;
+    }
+
+    bool fromAppDir = false;
+#ifdef APP_DIR
+    // if the file is chosen from the app directory, save it to the config directory
+    auto appDirStr = QString::fromUtf8(APP_DIR);
+    if (!appDirStr.isEmpty()) {
+        QFileInfo fInfo(fname);
+        if (fInfo.exists() && fInfo.dir() == QDir(appDirStr)) {
+            QString configDir = Properties::Instance()->configDir();
+            if (!configDir.isEmpty()) {
+                fname = QDir(configDir).absoluteFilePath(fInfo.fileName());
+                fromAppDir = true;
+            }
+        }
+    }
+#endif
+
+    // don't proceed if the bookmarks file exists but isn't from the app directory
+    // and the editor isn't modified
+    if (!fromAppDir
+        && !bookmarkPlainEdit->document()->isModified()
+        && QFile::exists(fname)) {
+        return;
+    }
 
     QFile f(fname);
-    if (!f.open(QFile::WriteOnly|QFile::Truncate))
-        qDebug() << "Cannot write to file" << f.fileName();
-    else
+
+    // first show a prompt message if needed
+    if (f.exists()) {
+        QMessageBox::StandardButton btn = QMessageBox::Yes;
+        if (fromAppDir) {
+            btn = QMessageBox::question(this, tr("Question"), tr("Do you want to overwrite this bookmarks file?")
+                                                              + QLatin1String("\n%1").arg(fname));
+        }
+        else if (!fname.endsWith(QLatin1String(".xml"))) {
+            btn =  QMessageBox::question(this, tr("Question"), tr("The name of bookmarks file does not end with '.xml'.\nAre you sure that you want to overwrite it?"));
+        }
+        if (btn == QMessageBox::No) {
+            return;
+        }
+    }
+
+    if (!f.open(QFile::WriteOnly|QFile::Truncate)) {
+        QMessageBox::warning(this, tr("Warning"), tr("Cannot write bookmarks to this file:")
+                                                  + QLatin1String("\n%1").arg(fname));
+    }
+    else {
         f.write(bookmarkPlainEdit->toPlainText().toUtf8());
+        if (fromAppDir) {
+            bookmarksLineEdit->setText(fname); // update the bookmarks file path
+        }
+        bookmarkPlainEdit->document()->setModified(false); // the user may have clicked "Apply", not "OK"
+    }
+}
+
+bool PropertiesDialog::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == dropShortCutEdit) {
+        if (event->type() == QEvent::KeyPress) {
+            QKeyEvent *ke = static_cast<QKeyEvent *>(event);
+            int k = ke->key();
+            // treat Tab and Backtab like other keys (instead of changing focus)
+            if (k == Qt::Key_Tab || k ==  Qt::Key_Backtab) {
+                dropShortCutEdit->pressKey(ke);
+                return true;
+            }
+            // apply with Enter/Return and cancel with Escape, like in other entries
+            if (ke->modifiers() == Qt::NoModifier || ke->modifiers() == Qt::KeypadModifier)
+            {
+                if (k == Qt::Key_Return || k == Qt::Key_Enter) {
+                    accept();
+                    return true;
+                }
+                if (k == Qt::Key_Escape) {
+                    reject();
+                    return true;
+                }
+            }
+        }
+    }
+    return QDialog::eventFilter(object, event);
 }
 
 /*

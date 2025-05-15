@@ -19,12 +19,17 @@
 #ifndef TERMWIDGET_H
 #define TERMWIDGET_H
 
-#include <qtermwidget.h>
+#include <qtermwidget6/qtermwidget.h>
+
 #include "terminalconfig.h"
 
-#include <QClipboard>
 #include <QAction>
 #include "dbusaddressable.h"
+
+#ifdef HAVE_LIBCANBERRA
+// forwarded declaration from <canberra.h>
+struct ca_context;
+#endif
 
 class TermWidgetImpl : public QTermWidget
 {
@@ -35,8 +40,8 @@ class TermWidgetImpl : public QTermWidget
     public:
 
         TermWidgetImpl(TerminalConfig &cfg, QWidget * parent=nullptr);
+        virtual ~TermWidgetImpl();
         void propertiesChanged();
-        void paste(QClipboard::Mode mode);
 
     signals:
         void renameSession();
@@ -46,12 +51,16 @@ class TermWidgetImpl : public QTermWidget
         void zoomIn();
         void zoomOut();
         void zoomReset();
-        void pasteSelection();
-        void pasteClipboard();
+        void customContextMenuCall(const QPoint & pos);
 
     private slots:
-        void customContextMenuCall(const QPoint & pos);
         void activateUrl(const QUrl& url, bool fromContextMenu);
+        void bell();
+
+    private:
+#ifdef HAVE_LIBCANBERRA
+        ca_context* libcanberra_context;
+#endif
 };
 
 
@@ -79,6 +88,8 @@ class TermWidget : public QWidget, public DBusAddressable
         void closeTerminal();
         #endif
 
+        bool eventFilter(QObject * obj, QEvent * evt) override;
+
     signals:
         void finished();
         void renameSession();
@@ -97,7 +108,6 @@ class TermWidget : public QWidget, public DBusAddressable
             return false;
         }
         void paintEvent (QPaintEvent * event) override;
-        bool eventFilter(QObject * obj, QEvent * evt) override;
 
     private slots:
         void term_termGetFocus();
