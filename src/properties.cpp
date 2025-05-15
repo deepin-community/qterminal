@@ -42,6 +42,18 @@ Properties::Properties(const QString& filename)
     else
         m_settings = new QSettings(filename);
     //qDebug("Properties constructor called");
+
+    m_watcher = new QFileSystemWatcher();
+    m_watcher->addPath(m_settings->fileName());
+    QObject::connect(m_watcher, &QFileSystemWatcher::fileChanged, [this](const QString &path) {
+        if (m_settings)
+        {
+            m_settings->sync();
+            loadSettings();
+            if (!m_watcher->files().contains(path))
+                m_watcher->addPath(path);
+        }
+    });
 }
 
 Properties::~Properties()
@@ -49,6 +61,8 @@ Properties::~Properties()
     //qDebug("Properties destructor called");
     delete m_settings;
     m_instance = nullptr;
+    delete  m_watcher;
+    m_watcher = nullptr;
 }
 
 QFont Properties::defaultFont()
@@ -103,6 +117,7 @@ void Properties::loadSettings()
     appTransparency = m_settings->value(QLatin1String("MainWindow/ApplicationTransparency"), 0).toInt();
     termTransparency = m_settings->value(QLatin1String("TerminalTransparency"), 0).toInt();
     backgroundImage = m_settings->value(QLatin1String("TerminalBackgroundImage"), QString()).toString();
+    backgroundMode = qBound(0, m_settings->value(QLatin1String("TerminalBackgroundMode"), 0).toInt(), 4);
 
     /* default to Right. see qtermwidget.h */
     scrollBarPos = m_settings->value(QLatin1String("ScrollbarPosition"), 2).toInt();
@@ -111,7 +126,9 @@ void Properties::loadSettings()
     /* default to BlockCursor */
     keyboardCursorShape = m_settings->value(QLatin1String("KeyboardCursorShape"), 0).toInt();
     hideTabBarWithOneTab = m_settings->value(QLatin1String("HideTabBarWithOneTab"), false).toBool();
-    m_motionAfterPaste = m_settings->value(QLatin1String("MotionAfterPaste"), 0).toInt();
+    // For "Motion after paste", 2 (scrolling to bottom) makes more sense
+    m_motionAfterPaste = m_settings->value(QLatin1String("MotionAfterPaste"), 2).toInt();
+    m_disableBracketedPasteMode = m_settings->value(QLatin1String("DisableBracketedPasteMode"), false).toBool();
 
     /* fixed tabs width */
     fixedTabWidth = m_settings->value(QLatin1String("FixedTabWidth"), true).toBool();
@@ -129,8 +146,9 @@ void Properties::loadSettings()
     askOnExit = m_settings->value(QLatin1String("AskOnExit"), true).toBool();
     saveSizeOnExit = m_settings->value(QLatin1String("SaveSizeOnExit"), true).toBool();
     savePosOnExit = m_settings->value(QLatin1String("SavePosOnExit"), true).toBool();
-    useCWD = m_settings->value(QLatin1String("UseCWD"), false).toBool();
+    useCWD = m_settings->value(QLatin1String("UseCWD"), true).toBool();
     m_openNewTabRightToActiveTab = m_settings->value(QLatin1String("OpenNewTabRightToActiveTab"), false).toBool();
+    audibleBell = m_settings->value(QLatin1String("AudibleBell"), false).toBool();
     term = m_settings->value(QLatin1String("Term"), QLatin1String("xterm-256color")).toString();
     handleHistoryCommand = m_settings->value(QLatin1String("HandleHistory")).toString();
 
@@ -146,7 +164,7 @@ void Properties::loadSettings()
     dropShortCut = QKeySequence(m_settings->value(QLatin1String("ShortCut"), QLatin1String("F12")).toString());
     dropKeepOpen = m_settings->value(QLatin1String("KeepOpen"), false).toBool();
     dropShowOnStart = m_settings->value(QLatin1String("ShowOnStart"), true).toBool();
-    dropWidht = m_settings->value(QLatin1String("Width"), 70).toInt();
+    dropWidth = m_settings->value(QLatin1String("Width"), 70).toInt();
     dropHeight = m_settings->value(QLatin1String("Height"), 45).toInt();
     m_settings->endGroup();
 
@@ -157,8 +175,11 @@ void Properties::loadSettings()
 
     confirmMultilinePaste = m_settings->value(QLatin1String("ConfirmMultilinePaste"), false).toBool();
     trimPastedTrailingNewlines = m_settings->value(QLatin1String("TrimPastedTrailingNewlines"), false).toBool();
+    wordCharacters = m_settings->value(QLatin1String("WordCharacters"), QLatin1String(":@-./_~")).toString();
 
     windowMaximized = m_settings->value(QLatin1String("LastWindowMaximized"), false).toBool();
+
+    swapMouseButtons2and3 = m_settings->value(QLatin1String("SwapMouseButtons2and3"), false).toBool();
 
     prefDialogSize = m_settings->value(QLatin1String("PrefDialogSize")).toSize();
 }
@@ -218,11 +239,13 @@ void Properties::saveSettings()
     m_settings->setValue(QLatin1String("TerminalMargin"), terminalMargin);
     m_settings->setValue(QLatin1String("TerminalTransparency"), termTransparency);
     m_settings->setValue(QLatin1String("TerminalBackgroundImage"), backgroundImage);
+    m_settings->setValue(QLatin1String("TerminalBackgroundMode"), backgroundMode);
     m_settings->setValue(QLatin1String("ScrollbarPosition"), scrollBarPos);
     m_settings->setValue(QLatin1String("TabsPosition"), tabsPos);
     m_settings->setValue(QLatin1String("KeyboardCursorShape"), keyboardCursorShape);
     m_settings->setValue(QLatin1String("HideTabBarWithOneTab"), hideTabBarWithOneTab);
     m_settings->setValue(QLatin1String("MotionAfterPaste"), m_motionAfterPaste);
+    m_settings->setValue(QLatin1String("DisableBracketedPasteMode"), m_disableBracketedPasteMode);
 
     m_settings->setValue(QLatin1String("FixedTabWidth"), fixedTabWidth);
     m_settings->setValue(QLatin1String("FixedTabWidthValue"), fixedTabWidthValue);
@@ -239,6 +262,7 @@ void Properties::saveSettings()
     m_settings->setValue(QLatin1String("SaveSizeOnExit"), saveSizeOnExit);
     m_settings->setValue(QLatin1String("UseCWD"), useCWD);
     m_settings->setValue(QLatin1String("OpenNewTabRightToActiveTab"), m_openNewTabRightToActiveTab);
+    m_settings->setValue(QLatin1String("AudibleBell"), audibleBell);
     m_settings->setValue(QLatin1String("Term"), term);
     m_settings->setValue(QLatin1String("HandleHistory"), handleHistoryCommand);
 
@@ -253,7 +277,7 @@ void Properties::saveSettings()
     m_settings->setValue(QLatin1String("ShortCut"), dropShortCut.toString());
     m_settings->setValue(QLatin1String("KeepOpen"), dropKeepOpen);
     m_settings->setValue(QLatin1String("ShowOnStart"), dropShowOnStart);
-    m_settings->setValue(QLatin1String("Width"), dropWidht);
+    m_settings->setValue(QLatin1String("Width"), dropWidth);
     m_settings->setValue(QLatin1String("Height"), dropHeight);
     m_settings->endGroup();
 
@@ -264,10 +288,19 @@ void Properties::saveSettings()
 
     m_settings->setValue(QLatin1String("ConfirmMultilinePaste"), confirmMultilinePaste);
     m_settings->setValue(QLatin1String("TrimPastedTrailingNewlines"), trimPastedTrailingNewlines);
+    m_settings->setValue(QLatin1String("WordCharacters"), wordCharacters);
 
     m_settings->setValue(QLatin1String("LastWindowMaximized"), windowMaximized);
+    m_settings->setValue(QLatin1String("SwapMouseButtons2and3"), swapMouseButtons2and3);
 
     m_settings->setValue(QLatin1String("PrefDialogSize"), prefDialogSize);
+
+    // the config file may be created now
+    if (!m_watcher->files().contains(m_settings->fileName()))
+    {
+        m_settings->sync();
+        m_watcher->addPath(m_settings->fileName());
+    }
 }
 
 int Properties::versionComparison(const QString &v1, const QString &v2)
@@ -376,5 +409,15 @@ void Properties::removeAccelerator(QString& str)
     str.remove(QRegularExpression(QStringLiteral("\\s*\\(&[a-zA-Z0-9]\\)\\s*")));
     // other languages
     str.remove(QLatin1Char('&'));
+}
+
+QString Properties::configDir() const
+{
+    return QFileInfo(m_settings->fileName()).absoluteDir().canonicalPath();
+}
+
+QString Properties::profile() const
+{
+    return filename;
 }
 

@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QtCore>
 #include <QFont>
+#include <QFileSystemWatcher>
 
 typedef QString Session;
 
@@ -40,6 +41,8 @@ class Properties
         void saveSettings();
         void loadSettings();
         void migrate_settings();
+        QString configDir() const;
+        QString profile() const;
 
         static void removeAccelerator(QString& str);
 
@@ -49,7 +52,7 @@ class Properties
         QPoint mainWindowPosition;
         QByteArray mainWindowState;
         //ShortcutMap shortcuts;
-        QString shell;
+        QStringList shell;
         QFont font;
         QString colorScheme;
         QString guiStyle;
@@ -67,12 +70,14 @@ class Properties
         int appTransparency;
         int termTransparency;
         QString backgroundImage;
+        int backgroundMode;
 
         int scrollBarPos;
         int tabsPos;
         int keyboardCursorShape;
         bool hideTabBarWithOneTab;
         int m_motionAfterPaste;
+        bool m_disableBracketedPasteMode;
 
         bool fixedTabWidth;
         int fixedTabWidthValue;
@@ -95,6 +100,8 @@ class Properties
         bool useCWD;
         bool m_openNewTabRightToActiveTab;
 
+        bool audibleBell;
+
         QString term;
 
         QString handleHistoryCommand;
@@ -108,7 +115,7 @@ class Properties
         QKeySequence dropShortCut;
         bool dropKeepOpen;
         bool dropShowOnStart;
-        int dropWidht;
+        int dropWidth;
         int dropHeight;
 
         bool changeWindowTitle;
@@ -117,8 +124,10 @@ class Properties
 
         bool confirmMultilinePaste;
         bool trimPastedTrailingNewlines;
+        QString wordCharacters;
 
         bool windowMaximized;
+        bool swapMouseButtons2and3;
 
         bool useFontBoxDrawingChars;
     private:
@@ -136,6 +145,7 @@ class Properties
 
         QSettings *m_settings;
 
+        QFileSystemWatcher *m_watcher;
 };
 
 #endif

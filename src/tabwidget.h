@@ -54,7 +54,7 @@ public slots:
     void removeTab(int);
     void switchTab(int);
     void onAction();
-    void saveCurrentChanged(int);
+    void onCurrentChanged(int);
     void removeCurrentTab();
     int switchToRight();
     int switchToLeft();
@@ -98,7 +98,7 @@ public slots:
     void switchToNext();
     void switchToPrev();
 signals:
-    void closeTabNotification(bool);
+    void closeLastTabNotification();
     void tabRenameRequested(int);
     void tabTitleColorChangeRequested(int);
     void currentTitleChanged(int);
@@ -126,6 +126,8 @@ private:
     TabBar *mTabBar;
     QScopedPointer<TabSwitcher> mSwitcher;
     QList<QWidget*> mHistory;
+
+    QMetaObject::Connection mFocusConnection;
 };
 
 #endif

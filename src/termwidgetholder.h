@@ -37,7 +37,7 @@ typedef enum NavigationDirection {
 
 /*! \brief TermWidget group/session manager.
 
-This widget (one per TabWidget tab) is a "proxy" widget beetween TabWidget and
+This widget (one per TabWidget tab) is a "proxy" widget between TabWidget and
 unspecified count of TermWidgets. Basically it should look like a single TermWidget
 for TabWidget - with its signals and slots.
 
@@ -87,6 +87,7 @@ class TermWidgetHolder : public QWidget
         void lastTerminalClosed();
         void renameSession();
         void termTitleChanged(QString title, QString icon) const;
+        void termFocusChanged();
 
     private:
         QString m_wdir;

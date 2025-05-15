@@ -8,15 +8,13 @@
 #include "properties.h"
 #include "termwidget.h"
 
-TerminalConfig::TerminalConfig(const QString & wdir, const QString & shell)
+TerminalConfig::TerminalConfig(const QString &wdir, const QStringList &shell)
+    : m_workingDirectory(wdir)
+    , m_shell(shell)
 {
-    m_workingDirectory = wdir;
-    m_shell = shell;
 }
 
-TerminalConfig::TerminalConfig()
-{
-}
+TerminalConfig::TerminalConfig() = default;
 
 TerminalConfig::TerminalConfig(const TerminalConfig &cfg)
     : m_currentDirectory(cfg.m_currentDirectory),
@@ -32,7 +30,7 @@ QString TerminalConfig::getWorkingDirectory()
     return QTerminalApp::Instance()->getWorkingDirectory();
 }
 
-QString TerminalConfig::getShell()
+QStringList TerminalConfig::getShell()
 {
     if (!m_shell.isEmpty())
         return m_shell;
@@ -41,11 +39,11 @@ QString TerminalConfig::getShell()
     QByteArray envShell = qgetenv("SHELL");
     if (envShell.constData() != nullptr)
     {
-        QString shellString = QString::fromLocal8Bit(envShell);
+        QString shellString = QString::fromLocal8Bit(envShell).trimmed();
         if (!shellString.isEmpty())
-            return shellString;
+            return QStringList{shellString};
     }
-    return QString();
+    return QStringList();
 }
 
 void TerminalConfig::setWorkingDirectory(const QString &val)
@@ -53,7 +51,7 @@ void TerminalConfig::setWorkingDirectory(const QString &val)
     m_workingDirectory = val;
 }
 
-void TerminalConfig::setShell(const QString &val)
+void TerminalConfig::setShell(const QStringList &val)
 {
     m_shell = val;
 }
@@ -82,21 +80,28 @@ TerminalConfig TerminalConfig::fromDbus(const QHash<QString,QVariant> &termArgsC
 
 static QString variantToString(const QVariant& variant, QString &defaultVal)
 {
-    if (variant.type() == QVariant::String)
+    if (variant.typeId() == QMetaType::QString)
         return qvariant_cast<QString>(variant);
+    return defaultVal;
+}
+
+static QStringList variantToStringList(const QVariant& variant, QStringList &defaultVal)
+{
+    if (variant.typeId() == QMetaType::QStringList)
+        return qvariant_cast<QStringList>(variant);
     return defaultVal;
 }
 
 TerminalConfig TerminalConfig::fromDbus(const QHash<QString,QVariant> &termArgs)
 {
     QString wdir = QString();
-    QString shell(Properties::Instance()->shell);
+    QStringList shell(Properties::Instance()->shell);
     if (termArgs.contains(QLatin1String(DBUS_ARG_WORKDIR)))
     {
         wdir = variantToString(termArgs[QLatin1String(DBUS_ARG_WORKDIR)], wdir);
     }
     if (termArgs.contains(QLatin1String(DBUS_ARG_SHELL))) {
-        shell = variantToString(termArgs[QLatin1String(DBUS_ARG_SHELL)], shell);
+        shell = variantToStringList(termArgs[QLatin1String(DBUS_ARG_SHELL)], shell);
     }
     return TerminalConfig(wdir, shell);
 }

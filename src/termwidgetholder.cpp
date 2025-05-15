@@ -61,9 +61,7 @@ TermWidgetHolder::TermWidgetHolder(TerminalConfig &config, QWidget * parent)
     setLayout(lay);
 }
 
-TermWidgetHolder::~TermWidgetHolder()
-{
-}
+TermWidgetHolder::~TermWidgetHolder() = default;
 
 void TermWidgetHolder::setInitialFocus()
 {
@@ -75,7 +73,7 @@ void TermWidgetHolder::setInitialFocus()
 
 void TermWidgetHolder::loadSession()
 {
-    bool ok;
+    bool ok = false;
     QString name = QInputDialog::getItem(this, tr("Load Session"),
                                          tr("List of saved sessions:"),
                                          Properties::Instance()->sessions.keys(),
@@ -201,7 +199,7 @@ void TermWidgetHolder::directionalNavigation(NavigationDirection dir) {
     // Find an active widget
     QList<TermWidget*> l = findChildren<TermWidget*>();
     int ix = -1;
-    for (TermWidget * w : qAsConst(l))
+    for (TermWidget * w : std::as_const(l))
     {
         ++ix;
         if (w->impl()->hasFocus())
@@ -233,14 +231,14 @@ void TermWidgetHolder::directionalNavigation(NavigationDirection dir) {
     int lowestX = INT_MAX;
     int lowestMidpointDistance = INT_MAX;
     TermWidget *fittest = nullptr;
-    for (TermWidget * w : qAsConst(l))
+    for (TermWidget * w : std::as_const(l))
     {
         NavigationData contenderDims = getNormalizedDimensions(w, dir);
         int midpointDistance = std::min(
             abs(poi.y() - contenderDims.topLeft.y()),
             abs(poi.y() - contenderDims.bottomRight.y())
         );
-        if (contenderDims.topLeft.x() > poi.x()) 
+        if (contenderDims.topLeft.x() > poi.x())
         {
             if (contenderDims.topLeft.x() > lowestX)
                 continue;
@@ -345,7 +343,7 @@ TermWidget * TermWidgetHolder::split(TermWidget *term, Qt::Orientation orientati
     s->insertWidget(0, term);
 
     cfg.provideCurrentDirectory(term->impl()->workingDirectory());
-    
+
     TermWidget * w = newTerm(cfg);
     s->insertWidget(1, w);
     s->setSizes(sizes);
@@ -385,21 +383,21 @@ void TermWidgetHolder::setCurrentTerminal(TermWidget* term)
     {
         if (m_currentTerm->impl()->isTitleChanged())
         {
-            emit termTitleChanged(m_currentTerm->impl()->title(), m_currentTerm->impl()->icon());
+            Q_EMIT termTitleChanged(m_currentTerm->impl()->title(), m_currentTerm->impl()->icon());
         } else
         {
-            emit termTitleChanged(windowTitle(), QString{});
+            Q_EMIT termTitleChanged(windowTitle(), QString{});
         }
+        Q_EMIT termFocusChanged();
     }
 }
 
 void TermWidgetHolder::handle_finished()
 {
     TermWidget * w = qobject_cast<TermWidget*>(sender());
-    if (!w)
+    if (w == nullptr)
     {
-        qDebug() << "TermWidgetHolder::handle_finished: Unknown object to handle" << w;
-        assert(0);
+        qFatal("TermWidgetHolder::handle_finished: Unknown object to handle");
     }
     splitCollapse(w);
 }

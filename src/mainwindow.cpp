@@ -16,6 +16,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
+#include <utility>
+
 #include <QDockWidget>
 #include <QScreen>
 #include <QToolButton>
@@ -23,6 +25,8 @@
 #include <QStandardPaths>
 #include <QTimer>
 #include <functional>
+#include <QGuiApplication>
+#include <QActionGroup>
 
 #ifdef HAVE_QDBUS
 #include <QtDBus/QtDBus>
@@ -39,6 +43,9 @@
 #include "bookmarkswidget.h"
 #include "qterminalapp.h"
 #include "dbusaddressable.h"
+
+#include <LayerShellQt/Shell>
+#include <LayerShellQt/Window>
 
 typedef std::function<bool(MainWindow&, QAction *)> checkfn;
 Q_DECLARE_METATYPE(checkfn)
@@ -67,7 +74,6 @@ MainWindow::MainWindow(TerminalConfig &cfg,
 #ifdef HAVE_QDBUS
     registerAdapter<WindowAdaptor, MainWindow>(this);
 #endif
-    m_removeFinished = false;
     QTerminalApp::Instance()->addWindow(this);
     // We want terminal translucency...
     setAttribute(Qt::WA_TranslucentBackground);
@@ -82,11 +88,7 @@ MainWindow::MainWindow(TerminalConfig &cfg,
     // https://github.com/lxqt/qterminal/issues/181 - Minimum size
     // https://github.com/lxqt/qterminal/issues/263 - Decrease minimal height
     QFontMetrics metrics(Properties::Instance()->font);
-#if (QT_VERSION >= QT_VERSION_CHECK(5,11,0))
     int spaceWidth = metrics.horizontalAdvance(QChar(QChar::Space));
-#else
-    int spaceWidth = metrics.width(QChar(QChar::Space));
-#endif
     setMinimumSize(QSize(10 * spaceWidth, metrics.height()));
 
     m_bookmarksDock = new QDockWidget(tr("Bookmarks"), this);
@@ -119,14 +121,16 @@ MainWindow::MainWindow(TerminalConfig &cfg,
         else if (Properties::Instance()->fixedWindowSize.isValid()) {
             resize(Properties::Instance()->fixedWindowSize);
         }
-        if (Properties::Instance()->savePosOnExit && !Properties::Instance()->mainWindowPosition.isNull()) {
+        if (Properties::Instance()->savePosOnExit && !Properties::Instance()->mainWindowPosition.isNull()
+            && QGuiApplication::platformName() != QStringLiteral("wayland")
+            ) {
             move(Properties::Instance()->mainWindowPosition);
         }
         restoreState(Properties::Instance()->mainWindowState);
     }
 
     consoleTabulator->setAutoFillBackground(true);
-    connect(consoleTabulator, &TabWidget::closeTabNotification, this, &MainWindow::testClose);
+    connect(consoleTabulator, &TabWidget::closeLastTabNotification, this, &MainWindow::close);
     consoleTabulator->setTabPosition((QTabWidget::TabPosition)Properties::Instance()->tabsPos);
     //consoleTabulator->setShellProgram(command);
 
@@ -145,15 +149,14 @@ MainWindow::MainWindow(TerminalConfig &cfg,
     /* The tab should be added after all changes are made to
        the main window; otherwise, the initial prompt might
        get jumbled because of changes in internal geometry. */
-    consoleTabulator->addNewTab(m_config);
+    addNewTab(m_config);
 }
 
 void MainWindow::rebuildActions()
 {
     // Delete all setting-related QObjects
     delete settingOwner;
-    settingOwner = new QWidget(this);
-    settingOwner->setGeometry(0,0,0,0);
+    settingOwner = new QObject(this);
 
     // Then create them again
     setup_FileMenu_Actions();
@@ -168,9 +171,25 @@ MainWindow::~MainWindow()
 
 void MainWindow::enableDropMode()
 {
+    if (QGuiApplication::platformName() == QStringLiteral("wayland"))
+    {
+        winId();
+        if (QWindow *win = windowHandle())
+        {
+            if (LayerShellQt::Window* layershell = LayerShellQt::Window::get(win))
+            {
+                layershell->setLayer(LayerShellQt::Window::Layer::LayerOverlay);
+                layershell->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityOnDemand);
+                LayerShellQt::Window::Anchors anchors = {LayerShellQt::Window::AnchorTop};
+                layershell->setAnchors(anchors);
+            }
+        }
+    }
+
     setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint);
 
     m_dropLockButton = new QToolButton(this);
+    m_dropLockButton->setToolTip(tr("Keep window open when it loses focus"));
     consoleTabulator->setCornerWidget(m_dropLockButton, Qt::BottomRightCorner);
     m_dropLockButton->setCheckable(true);
     m_dropLockButton->connect(m_dropLockButton, &QToolButton::clicked, this, &MainWindow::setKeepOpen);
@@ -189,7 +208,7 @@ void MainWindow::setDropShortcut(const QKeySequence& dropShortCut)
     if (m_dropShortcut.shortcut() != dropShortCut)
     {
         m_dropShortcut.setShortcut(dropShortCut);
-        qWarning() << tr("Press \"%1\" to see the terminal.").arg(dropShortCut.toString());
+        qWarning().noquote() << tr("Press \"%1\" to see the terminal.").arg(dropShortCut.toString());
     }
 }
 
@@ -272,10 +291,10 @@ void MainWindow::setup_ActionsMenu_Actions()
 
     menu_Actions->addSeparator();
 
-    setup_Action(SPLIT_HORIZONTAL, new QAction(tr("Split Terminal &Horizontally"), settingOwner),
+    setup_Action(SPLIT_HORIZONTAL, new QAction(tr("Split &View Top-Bottom"), settingOwner),
                  nullptr, consoleTabulator, SLOT(splitHorizontally()), menu_Actions);
 
-    setup_Action(SPLIT_VERTICAL, new QAction(tr("Split Terminal &Vertically"), settingOwner),
+    setup_Action(SPLIT_VERTICAL, new QAction(tr("Split Vie&w Left-Right"), settingOwner),
                  nullptr, consoleTabulator, SLOT(splitVertically()), menu_Actions);
 
     data.setValue(checkSubterminals);
@@ -331,13 +350,13 @@ void MainWindow::setup_ActionsMenu_Actions()
 
     // TODO/FIXME: unimplemented for now
     act = new QAction(tr("&Save Session"), this);
-    // do not use sequences for this task - it collides with eg. mc shorcuts
+    // do not use sequences for this task - it collides with eg. mc shortcuts
     // and mainly - it's not used too often
     //act->setShortcut(QKeySequence::Save);
     connect(act, SIGNAL(triggered()), consoleTabulator, SLOT(saveSession()));
 
     act = new QAction(tr("&Load Session"), this);
-    // do not use sequences for this task - it collides with eg. mc shorcuts
+    // do not use sequences for this task - it collides with eg. mc shortcuts
     // and mainly - it's not used too often
     //act->setShortcut(QKeySequence::Open);
     connect(act, SIGNAL(triggered()), consoleTabulator, SLOT(loadSession()));
@@ -362,8 +381,10 @@ void MainWindow::setup_FileMenu_Actions()
 
     if (presetsMenu == nullptr) {
         presetsMenu = new QMenu(tr("New Tab From &Preset"), this);
-        presetsMenu->addAction(QIcon(), tr("1 &Terminal"),
-                               this, SLOT(addNewTab()));
+        auto a = presetsMenu->addAction(QIcon(), tr("1 &Terminal"));
+        connect(a, &QAction::triggered, consoleTabulator, [this]() {
+            consoleTabulator->addNewTab(m_config);
+        });
         presetsMenu->addAction(QIcon(), tr("2 &Horizontal Terminals"),
                                consoleTabulator, SLOT(preset2Horizontal()));
         presetsMenu->addAction(QIcon(), tr("2 &Vertical Terminals"),
@@ -538,7 +559,7 @@ void MainWindow::setupCustomDirs()
 
     dirs.removeDuplicates(); // QStandardPaths::locateAll() produces duplicates
 
-    for (const QString& dir : qAsConst(dirs)) {
+    for (const QString& dir : std::as_const(dirs)) {
         TermWidgetImpl::addCustomColorSchemeDir(dir + QLatin1String("/color-schemes"));
     }
     // FIXME: To be deprecated and then removed
@@ -580,23 +601,29 @@ void MainWindow::showFullscreen(bool fullscreen)
         setWindowState(windowState() & ~Qt::WindowFullScreen);
 }
 
-void MainWindow::testClose(bool removeFinished)
-{
-
-    m_removeFinished = removeFinished;
-    close();
-}
 void MainWindow::toggleBookmarks()
 {
     m_bookmarksDock->toggleViewAction()->trigger();
+    if (m_bookmarksDock->isVisible())
+    { // give the focus to the bookmarks dock
+        if (m_bookmarksDock->isFloating())
+        {
+            m_bookmarksDock->activateWindow();
+        }
+        m_bookmarksDock->widget()->setFocus();
+    }
 }
 
 
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
     if (!Properties::Instance()->askOnExit
-        || !consoleTabulator->count())
+        || consoleTabulator->count() == 0
+        // the session is ended explicitly (e.g., by ctrl-d); prompt doesn't make sense
+        || consoleTabulator->terminalHolder()->findChildren<TermWidget*>().count() == 0)
     {
+        disconnect(m_bookmarksDock, &QDockWidget::visibilityChanged,
+                   this, &MainWindow::bookmarksDock_visibilityChanged); // prevent crash
         // #80 - do not save state and geometry in drop mode
         if (!m_dropMode) {
             if (Properties::Instance()->savePosOnExit) {
@@ -608,6 +635,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
             Properties::Instance()->windowMaximized = isMaximized();
             Properties::Instance()->mainWindowState = saveState();
         }
+        rebuildActions(); // shortcuts may have changed by another running instance
         Properties::Instance()->saveSettings();
         for (int i = consoleTabulator->count(); i > 0; --i) {
             consoleTabulator->removeTab(i - 1);
@@ -635,23 +663,20 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     dia->setLayout(lay);
 
     if (dia->exec() == QDialog::Accepted) {
+        disconnect(m_bookmarksDock, &QDockWidget::visibilityChanged,
+                   this, &MainWindow::bookmarksDock_visibilityChanged);
         Properties::Instance()->mainWindowPosition = pos();
         Properties::Instance()->mainWindowSize = size();
         Properties::Instance()->mainWindowState = saveState();
         Properties::Instance()->askOnExit = !dontAskCheck->isChecked();
         Properties::Instance()->windowMaximized = isMaximized();
+        rebuildActions();
         Properties::Instance()->saveSettings();
         for (int i = consoleTabulator->count(); i > 0; --i) {
             consoleTabulator->removeTab(i - 1);
         }
         ev->accept();
     } else {
-        if(m_removeFinished) {
-            QWidget *w = consoleTabulator->widget(consoleTabulator->count()-1);
-            consoleTabulator->removeTab(consoleTabulator->count()-1);
-            delete w; // delete the widget because the window isn't closed
-            m_removeFinished = false;
-        }
         ev->ignore();
     }
 
@@ -660,14 +685,23 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
 void MainWindow::actAbout_triggered()
 {
-    QMessageBox::about(this, QStringLiteral("QTerminal ") + QLatin1String(QTERMINAL_VERSION), tr("A lightweight multiplatform terminal emulator"));
+     QMessageBox::about(this, tr("About"),
+                     QStringLiteral("<center><b><big>QTerminal %1</big></b></center><br>").arg(qApp->applicationVersion())
+                     + tr("A lightweight and powerful multiplatform terminal emulator")
+                     + QStringLiteral("<br><br>")
+                     + tr("Copyright (C) ") + tr("2013-2022")
+                     + QStringLiteral("<br><a href='https://lxqt-project.org'>")
+                     + tr("LXQt Project")
+                     + QStringLiteral("</a><br><br>")
+                     + tr("Development: ")
+                     + QStringLiteral("<a href='https://github.com/lxqt/qterminal'>https://github.com/lxqt/qterminal</a><br><br>"));
 }
 
 void MainWindow::actProperties_triggered()
 {
-    PropertiesDialog *p = new PropertiesDialog(this);
-    connect(p, &PropertiesDialog::propertiesChanged, this, &MainWindow::propertiesChanged);
-    p->exec();
+    PropertiesDialog p(this);
+    connect(&p, &PropertiesDialog::propertiesChanged, this, &MainWindow::propertiesChanged);
+    p.exec();
 }
 
 void MainWindow::propertiesChanged()
@@ -714,6 +748,8 @@ void MainWindow::propertiesChanged()
 
     onCurrentTitleChanged(consoleTabulator->currentIndex());
 
+    setKeepOpen(Properties::Instance()->dropKeepOpen);
+
     realign();
 }
 
@@ -727,11 +763,11 @@ void MainWindow::realign()
         const QRect desktop = appScreen->availableGeometry();
         QRect g = QRect(desktop.x(),
                         desktop.y(),
-                        desktop.width()  * Properties::Instance()->dropWidht  / 100,
+                        desktop.width()  * Properties::Instance()->dropWidth  / 100,
                         desktop.height() * Properties::Instance()->dropHeight / 100);
         g.moveCenter(desktop.center());
         // do not use 0 here - we need to calculate with potential panel on top
-        g.setTop(desktop.top());
+        g.moveTop(desktop.top());
         if (g != geometry()) {
             setGeometry(g);
         }
@@ -747,10 +783,29 @@ void MainWindow::updateActionGroup(QAction *a)
 
 void MainWindow::showHide()
 {
+    // don't toggle the drop-down terminal when it has a modal dialog
+    const auto dialogs = findChildren<QDialog*>();
+    for (const auto& dialog : dialogs)
+    {
+        if(dialog->isModal())
+        {
+            return;
+        }
+    }
+
     if (isVisible())
+    {
         hide();
+    }
     else
     {
+        // The checked state of the fullscreen action should be reset; otherwise, its shortcut
+        // might need to be pressed twice later to make the window fullscreen. We don't consult
+        // "isFullScreen()" because it will return "false" if the window has been deactivated.
+        if (auto a = actions.value(QLatin1String(FULLSCREEN)))
+        {
+            a->setChecked(false);
+        }
         realign();
         show();
         activateWindow();
@@ -790,7 +845,7 @@ void MainWindow::handleHistory()
     TermWidgetImpl *impl = consoleTabulator->terminalHolder()->currentTerminal()->impl();
     impl->saveHistory(&file);
     file.close();
-    QStringList args = Properties::Instance()->handleHistoryCommand.split(QLatin1Char(' '), QString::SkipEmptyParts);
+    QStringList args = Properties::Instance()->handleHistoryCommand.split(QLatin1Char(' '), Qt::SkipEmptyParts);
     if (args.isEmpty())
         return;
 
@@ -823,24 +878,49 @@ void MainWindow::newTerminalWindow()
     if (ch)
         cfg.provideCurrentDirectory(ch->currentTerminal()->impl()->workingDirectory());
 
-    MainWindow *w = new MainWindow(cfg, false);
-    w->show();
+    if (m_dropMode)
+    { // the dropdown process has only one (dropdown) main window
+        QStringList args;
+        args <<  QStringLiteral("-w") << cfg.getWorkingDirectory();
+        QString profile = Properties::Instance()->profile();
+        if (!profile.isEmpty())
+        {
+            args << QStringLiteral("-p") << profile;
+        }
+        QProcess::startDetached(QStringLiteral("qterminal"), args);
+    }
+    else
+    {
+        MainWindow *w = new MainWindow(cfg, false);
+        w->show();
+    }
 }
 
 void MainWindow::bookmarksWidget_callCommand(const QString& cmd)
 {
+    if (m_bookmarksDock->isFloating())
+    {
+        activateWindow();
+    }
     consoleTabulator->terminalHolder()->currentTerminal()->impl()->sendText(cmd);
-    consoleTabulator->terminalHolder()->currentTerminal()->setFocus();
+    // the focus proxy (TermWidgetImpl) should be checked because it's nullptr with "exit"
+    if (consoleTabulator->terminalHolder()->currentTerminal()->focusProxy() != nullptr) {
+        consoleTabulator->terminalHolder()->currentTerminal()->setFocus();
+    }
 }
 
 void MainWindow::bookmarksDock_visibilityChanged(bool visible)
 {
     Properties::Instance()->bookmarksVisible = visible;
+    if (!visible && consoleTabulator->terminalHolder()
+        && consoleTabulator->terminalHolder()->currentTerminal()->focusProxy() != nullptr)
+    { // this is especially needed in the drop-down mode
+        consoleTabulator->terminalHolder()->currentTerminal()->setFocus();
+    }
 }
 
-void MainWindow::addNewTab()
+void MainWindow::addNewTab(TerminalConfig cfg)
 {
-    TerminalConfig cfg;
     if (Properties::Instance()->terminalsPreset == 3)
         consoleTabulator->preset4Terminals();
     else if (Properties::Instance()->terminalsPreset == 2)
@@ -849,7 +929,7 @@ void MainWindow::addNewTab()
         consoleTabulator->preset2Horizontal();
     else
         consoleTabulator->addNewTab(cfg);
-    updateDisabledActions();
+    // disabled actions are updated by TabWidget::onCurrentChanged()
 }
 
 void MainWindow::onCurrentTitleChanged(int index)
@@ -877,7 +957,7 @@ bool MainWindow::hasMultipleSubterminals(QAction *)
 
 bool MainWindow::hasIndexedTab(QAction *action)
 {
-    bool ok;
+    bool ok = false;
     const int index = action->property("tab").toInt(&ok);
     Q_ASSERT(ok);
     static_cast<void>(ok);

@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 #include <QDebug>
-#include <QStandardPaths>
+#include <QShortcut>
 
 #include "bookmarkswidget.h"
 #include "properties.h"
@@ -98,58 +98,6 @@ public:
         : AbstractBookmarkItem(AbstractBookmarkItem::Group, parent)
     {
         m_display = name;
-    }
-};
-
-class BookmarkLocalGroupItem : public BookmarkGroupItem
-{
-public:
-    BookmarkLocalGroupItem(AbstractBookmarkItem *parent)
-        : BookmarkGroupItem(QObject::tr("Local Bookmarks"), parent)
-    {
-        QList<QStandardPaths::StandardLocation> locations;
-        locations << QStandardPaths::DesktopLocation
-                  << QStandardPaths::DocumentsLocation
-                  << QStandardPaths::TempLocation
-                  << QStandardPaths::HomeLocation
-                  << QStandardPaths::MusicLocation
-                  << QStandardPaths::PicturesLocation;
-
-        QString path;
-        QString name;
-        QString cmd;
-        QDir d;
-
-        // standard $HOME subdirs
-        for (const QStandardPaths::StandardLocation i : qAsConst(locations))
-        {
-            path = QStandardPaths::writableLocation(i);
-            if (!d.exists(path))
-            {
-                continue;
-            }
-            name = QStandardPaths::displayName(i);
-
-            path.replace(QLatin1String(" "), QLatin1String("\\ "));
-            cmd = QLatin1String("cd ") + path;
-
-            addChild(new BookmarkCommandItem(name, cmd, this));
-        }
-
-        // system env - include dirs in the tree
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        const auto keys = env.keys();
-        for (const QString &i : keys)
-        {
-            path = env.value(i);
-            if (!d.exists(path) || !QFileInfo(path).isDir())
-            {
-                continue;
-            }
-            path.replace(QLatin1String(" "), QLatin1String("\\ "));
-            cmd = QLatin1String("cd ") + path;
-            addChild(new BookmarkCommandItem(i, cmd, this));
-        }
     }
 };
 
@@ -245,10 +193,8 @@ BookmarksModel::BookmarksModel(QObject *parent)
 
 void BookmarksModel::setup()
 {
-    if (m_root)
-        delete m_root;
+    delete m_root;
     m_root = new BookmarkRootItem();
-    m_root->addChild(new BookmarkLocalGroupItem(m_root));
     m_root->addChild(new BookmarkFileGroupItem(m_root, Properties::Instance()->bookmarksFile));
     beginResetModel();
     endResetModel();
@@ -256,8 +202,8 @@ void BookmarksModel::setup()
 
 BookmarksModel::~BookmarksModel()
 {
-    if (m_root)
-        delete m_root;
+    delete m_root;
+    m_root = nullptr;
 }
 
 int BookmarksModel::columnCount(const QModelIndex & /* parent */) const
@@ -341,6 +287,21 @@ int BookmarksModel::rowCount(const QModelIndex &parent) const
     return parentItem->childCount();
 }
 
+QModelIndexList BookmarksModel::allChildRows(const QModelIndex& parent) const
+{
+    QModelIndexList list;
+    for (int row = 0; row < rowCount(parent); ++row)
+    {
+        auto child = index(row, 0, parent); // we only need the row
+        list << child;
+        if (hasChildren(child))
+        {
+            list << allChildRows(child);
+        }
+    }
+    return list;
+}
+
 #if 0
 bool BookmarksModel::setData(const QModelIndex &index, const QVariant &value,
                              int role)
@@ -361,25 +322,32 @@ bool BookmarksModel::setData(const QModelIndex &index, const QVariant &value,
 
 BookmarksWidget::BookmarksWidget(QWidget *parent)
     : QWidget(parent)
+    , m_model(new BookmarksModel(this))
 {
     setupUi(this);
 
-    m_model = new BookmarksModel(this);
     treeView->setModel(m_model);
     treeView->header()->hide();
+    setFocusProxy(filterEdit);
 
-    connect(treeView, &QTreeView::doubleClicked,
+    connect(treeView, &QTreeView::activated,
             this, &BookmarksWidget::handleCommand);
+    connect(filterEdit, &QLineEdit::textChanged,
+            this, &BookmarksWidget::filter);
+
+    QShortcut *clearFilter = new QShortcut(QKeySequence (Qt::Key_Escape), this);
+    connect(clearFilter, &QShortcut::activated, this, [this] {
+        filterEdit->clear();
+    });
 }
 
-BookmarksWidget::~BookmarksWidget()
-{
-}
+BookmarksWidget::~BookmarksWidget() = default;
 
 void BookmarksWidget::setup()
 {
     m_model->setup();
 
+    treeView->setRootIndex(m_model->index(0, 0)); // do not show BookmarkFileGroupItem's top branch
     treeView->expandAll();
     treeView->resizeColumnToContents(0);
     treeView->resizeColumnToContents(1);
@@ -392,4 +360,26 @@ void BookmarksWidget::handleCommand(const QModelIndex& index)
         return;
 
     emit callCommand(item->value() + QLatin1Char('\n')); // TODO/FIXME: decide how to handle EOL
+}
+
+void BookmarksWidget::filter(const QString& str)
+{
+    treeView->clearSelection();
+    const QModelIndexList list = m_model->allChildRows(QModelIndex());
+    for (const auto& index : list)
+    {
+        AbstractBookmarkItem *item = static_cast<AbstractBookmarkItem*>(index.internalPointer());
+        if (item && item->type() == AbstractBookmarkItem::Command)
+        {
+            if (item->value().contains(str, Qt::CaseInsensitive)
+                || item->display().contains(str, Qt::CaseInsensitive))
+            {
+                treeView->setRowHidden(index.row(), index.parent(), false);
+            }
+            else
+            {
+                treeView->setRowHidden(index.row(), index.parent(), true);
+            }
+        }
+    }
 }
